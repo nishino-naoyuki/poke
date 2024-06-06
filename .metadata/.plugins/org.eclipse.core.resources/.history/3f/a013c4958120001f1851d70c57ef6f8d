@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+
+<body>
+	<p>初期手札</p>
+	<div class="handlist">
+	<th:block th:each="card : ${hand.cards}">
+		<div class="cardblock">
+			<img class="cardimg" th:src="${card.name}">
+		</div>	
+	</th:block>
+	<form action="@{/battle/init}" method="post">
+		<button>バトルスタート</button>
+	</form>
+	</div>
+</body>
+</html>

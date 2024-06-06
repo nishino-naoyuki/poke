@@ -1,0 +1,124 @@
+package com.example.logviewe.controller;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.example.logviewe.Exception.NotInitializeException;
+import com.example.logviewe.param.FieldDto;
+import com.example.logviewe.param.GameInfo;
+import com.example.logviewe.param.Hand;
+import com.example.logviewe.param.PlayerDto;
+import com.example.logviewe.param.input.InputData;
+import com.example.logviewe.service.LogAnalayzer;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
+import jakarta.servlet.http.HttpSession;
+
+@Controller
+@RequestMapping(value= {"/battle"})
+public class BattleController {
+	private final LogAnalayzer logana;
+	
+	@Autowired
+	private HttpSession session;
+
+	@Autowired
+	public BattleController(LogAnalayzer logana) {
+		this.logana = logana;
+	}
+	
+	@RequestMapping(value= {""}, method=RequestMethod.POST)
+    public ModelAndView fileInput(
+    		ModelAndView mv,
+    		@RequestParam MultipartFile battleFile
+    		) throws JsonMappingException, JsonProcessingException, NotInitializeException   {
+		
+		List<String> fileContents = fileContents(battleFile);
+		InputData.initialize(fileContents);
+		PlayerDto pdto = logana.getPlayerNames();
+		Hand hand = logana.getFirstHand(pdto.getMyName());
+		
+		GameInfo gameInfo = new GameInfo();
+		gameInfo.setHand(hand);
+		gameInfo.setPlayers(pdto);
+		
+		mv.addObject("hand",hand);
+    	mv.setViewName("start");
+    	
+    	session.setAttribute("gameInfo", gameInfo);
+    	
+    	return mv;
+    }
+
+	@RequestMapping(value= {"/init"}, method=RequestMethod.POST)
+    public ModelAndView init(
+    		ModelAndView mv
+    		) throws NotInitializeException    {
+		//セッションから情報種特区
+		GameInfo gameInfo = (GameInfo)session.getAttribute("gameInfo");
+		
+		logana.getInitilaize(gameInfo);
+
+    	session.setAttribute("gameInfo", gameInfo);
+    	
+		mv.addObject("fieldDto",gameInfo.getField());
+		mv.addObject("hand",gameInfo.getHand());
+    	mv.setViewName("init");
+    	
+    	return mv;
+	}
+
+	@RequestMapping(value= {"/field"}, method=RequestMethod.POST)
+    public ModelAndView field(
+    		ModelAndView mv
+    		) throws NotInitializeException    {
+		//セッションから情報種特区
+		GameInfo gameInfo = (GameInfo)session.getAttribute("gameInfo");
+		
+		logana.getInitilaize(gameInfo);
+
+    	session.setAttribute("gameInfo", gameInfo);
+    	
+		mv.addObject("fieldDto",gameInfo.getField());
+		mv.addObject("hand",gameInfo.getHand());
+    	mv.setViewName("field");
+    	
+    	logana.getTurnList(gameInfo.getPlayers());
+    	
+    	return mv;
+	}
+	
+	private List<String> fileContents(MultipartFile uploadFile) {
+        List<String> lines = new ArrayList<String>();
+        String line = null;
+        try {
+            InputStream stream = uploadFile.getInputStream();           
+            Reader reader = new InputStreamReader(stream);
+            BufferedReader buf= new BufferedReader(reader);
+            while((line = buf.readLine()) != null) {
+                lines.add(line);
+            }
+            line = buf.readLine();
+
+        } catch (IOException e) {
+            line = "Can't read contents.";
+            lines.add(line);
+            e.printStackTrace();
+        }
+        return lines;
+    }
+}

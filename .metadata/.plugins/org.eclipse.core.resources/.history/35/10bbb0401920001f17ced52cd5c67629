@@ -1,0 +1,9 @@
+package com.example.logviewe.param;
+
+import java.util.List;
+
+@Data
+public class BattleAreaDto {
+	private CardDto battlefield;
+	private List<CardDto> benchfield;
+}

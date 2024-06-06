@@ -1,0 +1,6 @@
+package com.example.logviewe.param.input;
+
+@Data
+public class InputData {
+
+}

@@ -1,0 +1,24 @@
+package com.example.logviewe.param.input;
+
+import java.util.List;
+
+import com.example.logviewe.Exception.NotInitializeException;
+
+import lombok.Data;
+
+@Data
+public class InputData {
+	private static InputData inputData = null;
+	private List<String> blogList;
+	private int readPt;
+	
+	public static InputData getInst() {
+		if( inputData == null ) {
+			throw new NotInitializeException();
+		}
+		return inputData;
+	}
+	public void initialize() {
+		
+	}
+}

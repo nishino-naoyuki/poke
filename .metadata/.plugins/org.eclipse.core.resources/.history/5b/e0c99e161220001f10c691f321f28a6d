@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+</head>
+
+<body>
+	<p>バトルログ読み込み</p>
+	<input class="form-control" type="file" value="" id="inputuserfile">
+	<button type="button" id="battle">バトル開始</button>
+	<th:block th:each="card : ${hand.cards}">
+	    <img th:src="${name}">
+	</th:block>
+</body>
+</html>

@@ -1,0 +1,17 @@
+.cardblock{
+	width: 10%;
+}
+.cardimg{
+	width: 90%;
+}
+.handlist{
+	width: 90%;
+	display: flex;
+}
+.benchblock{
+	height: 25%;
+}
+.battleblock{
+	height: 25%;
+	margin:0 auto 0 auto;
+}

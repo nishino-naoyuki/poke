@@ -1,0 +1,13 @@
+package com.example.logviewe.param.play;
+
+import java.util.List;
+
+import com.example.logviewe.param.CardDto;
+
+import lombok.Data;
+
+@Data
+public class Draw extends PlayDetail {
+	private int num;	//ドロー枚数‘
+	private List<CardDto> drawCards;
+}

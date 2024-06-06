@@ -1,0 +1,11 @@
+package com.example.logviewe.param;
+
+import java.util.List;
+
+import lombok.Data;
+
+@Data
+public class FieldDto {
+	private CardDto battlefield;
+	private List<CardDto> benchfield;
+}

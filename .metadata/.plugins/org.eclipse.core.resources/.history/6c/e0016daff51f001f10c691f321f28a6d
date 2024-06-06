@@ -1,0 +1,7 @@
+package com.example.logviewe.param;
+
+@data
+public class PlayerDto {
+	private String MyName;
+	private String oppName;
+}

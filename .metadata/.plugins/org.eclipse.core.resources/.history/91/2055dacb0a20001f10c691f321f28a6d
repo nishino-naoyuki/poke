@@ -1,0 +1,11 @@
+package com.example.logviewe.service;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class PokeApiService {
+
+	public String findSmallImage(String name) {
+		
+	}
+}

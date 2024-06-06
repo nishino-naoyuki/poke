@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+</head>
+
+<body>
+	<p>バトルログ読み込み</p>
+	<form th:action="@{/battle}" method="post" enctype="multipart/form-data">
+		<input class="form-control" type="file" name="battleFile" value="" id="inputuserfile">
+		<button id="battle">バトル開始</button>
+	</form>
+<script>
+	const battle = document.getElementById("battle");
+	//battle.addEventListener('click',()=>{	
+	//	const url = /*[[@{/battle}]]*/ "/battle";
+		// 送信データの準備
+	//	const formData = new FormData();
+	//	formData.append("battleFile", inputuserfile.files[0]);  // ファイル内容を詰める
+    //    fetch(url,{method:"post",body: formData})
+        //レスポンスの受け取り
+   //     .then( response => response.json()).then(result => {
+ 	//		if( result.errorMsg != null){
+ 	//			alert(result.errorMsg);
+ 	//		}else if(result.now > 0){
+ 	//			alert("登録完了："+result.now+"件");
+ 	//		}
+ 	//	});
+	//});
+
+</script>
+</body>
+</html>

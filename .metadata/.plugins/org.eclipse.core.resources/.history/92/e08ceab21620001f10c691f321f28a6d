@@ -1,0 +1,10 @@
+.cardblock{
+	width: 10%;
+}
+.cardimg{
+	width: 10%;
+}
+.handlist{
+	width: 90%;
+	display: flex;
+}
