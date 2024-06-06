@@ -36,7 +36,7 @@ public class BattleController {
 	@Autowired
 	private HttpSession session;
 
-	@Autowired
+	@Autowired 
 	public BattleController(LogAnalayzer logana) {
 		this.logana = logana;
 	}
