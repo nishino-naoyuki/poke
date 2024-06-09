@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<link th:href="@{/css/style.css?v=1.0.2}" rel="stylesheet">
+</head>
+
+<body>
+	<div class="playdetail">
+		<h3 th:text="|${turn.turnNo}ターン目(${turn.isFirst} ? '先行'' : '後攻')|"></h3>
+		<h3 th:text="|${turn.turnPlayerName}のターン|"></h3>
+		<th:block th:each="play : ${turn.plays}">
+			<div th:text="${play.msg}">
+			</div>	
+		</th:block>
+	</div>
+	<div class="fieldarea">
+		<p>対戦準備</p>
+		<div class="benchblock">
+			<th:block th:each="card : ${fieldDto.oppArea.benchfield}">
+				<div class="cardblock">
+					<img class="benchcardimg" th:src="${card.imgPath}">
+				</div>	
+			</th:block>
+		</div>	
+		<div class="battleblock">
+			<div class="cardblock">
+				<img class="battleimg" th:src="${fieldDto.oppArea.battlefield.imgPath}">
+			</div>	
+		</div>	
+		<div class="battleblock">
+			<div class="cardblock">
+				<img class="battleimg" th:src="${fieldDto.myArea.battlefield.imgPath}">
+			</div>	
+		</div>	
+		<div class="benchblock">
+			<th:block th:each="card : ${fieldDto.myArea.benchfield}">
+				<div class="cardblock">
+					<img class="benchcardimg" th:src="${card.imgPath}">
+				</div>	
+			</th:block>
+		</div>	
+		<p>手札</p>
+		<div class="handlist">
+			<th:block th:each="card : ${hand.cards}">
+				<div class="cardblock">
+					<img class="cardimg" th:src="${card.imgPath}">
+				</div>	
+			</th:block>
+		</div>
+		<form th:action="@{/battle/init}" method="post">
+			<button>バトルスタート</button>
+		</form>
+		</div>
+	</div>
+</body>
+</html>

@@ -33,13 +33,20 @@
     <fullyQualifiedTypeName name="org.slf4j.LoggerFactory"/>
     <fullyQualifiedTypeName name="java.util.HashMap"/>
     <fullyQualifiedTypeName name="java.util.Map"/>
-    <fullyQualifiedTypeName name="com.example.logviewe.param.CardDto"/>
     <fullyQualifiedTypeName name="java.util.List"/>
-    <fullyQualifiedTypeName name="com.example.logviewe.param.TurnList"/>
-    <fullyQualifiedTypeName name="com.example.logviewe.param.play.PlayDetail"/>
     <fullyQualifiedTypeName name="com.example.logviewe.param.play.Draw"/>
-    <fullyQualifiedTypeName name="lombok.Data"/>
     <fullyQualifiedTypeName name="com.example.logviewe.Exception.NotInitializeException"/>
-    <fullyQualifiedTypeName name="java.util.ArrayList"/>
     <fullyQualifiedTypeName name="com.example.logviewe.param.input.InputData"/>
+    <fullyQualifiedTypeName name="com.example.logviewe.param.play.PlayDetail"/>
+    <fullyQualifiedTypeName name="java.util.ArrayList"/>
+    <fullyQualifiedTypeName name="com.example.logviewe.param.TurnList"/>
+    <fullyQualifiedTypeName name="com.example.logviewe.param.Play"/>
+    <fullyQualifiedTypeName name="com.example.logviewe.param.PlayId"/>
+    <fullyQualifiedTypeName name="com.example.logviewe.service.play.PlayAnalayzerFactory"/>
+    <fullyQualifiedTypeName name="com.example.logviewe.param.Turn"/>
+    <fullyQualifiedTypeName name="com.example.logviewe.service.PokeApiService"/>
+    <fullyQualifiedTypeName name="com.example.logviewe.param.LogConst"/>
+    <fullyQualifiedTypeName name="com.example.logviewe.param.play.Attache"/>
+    <fullyQualifiedTypeName name="com.example.logviewe.param.CardDto"/>
+    <fullyQualifiedTypeName name="lombok.Data"/>
 </qualifiedTypeNameHistroy>

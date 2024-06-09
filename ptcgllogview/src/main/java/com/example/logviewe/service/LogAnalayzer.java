@@ -14,41 +14,24 @@ import com.example.logviewe.param.CardDto;
 import com.example.logviewe.param.FieldDto;
 import com.example.logviewe.param.GameInfo;
 import com.example.logviewe.param.Hand;
+import com.example.logviewe.param.LogConst;
+import com.example.logviewe.param.Play;
+import com.example.logviewe.param.PlayId;
 import com.example.logviewe.param.PlayerDto;
+import com.example.logviewe.param.Turn;
 import com.example.logviewe.param.TurnList;
 import com.example.logviewe.param.input.InputData;
 import com.example.logviewe.param.play.Draw;
 import com.example.logviewe.param.play.PlayDetail;
+import com.example.logviewe.service.play.PlayAnalayzerFactory;
 import com.example.logviewe.utils.StrUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 @Service
 public class LogAnalayzer {
-	PokeApiService pokeApiService;
 	Logger logger = LoggerFactory.getLogger(LogAnalayzer.class);
 	
-	
-	private final String DRAW7OP = " drew 7 cards for the opening hand.";
-	private final String CARDMAKR = "   • ";
-	private final String DFIRST = " decided to go first.";
-	private final String DSECOND = " decided to go second.";
-	private final String TOACTIVESP = " to the Active Spot.";
-	private final String TOBENCH = " to the Bench.";
-	private final String TOSTUDIUM = " to the Stadium spot.";
-	private final String PLAYED = " played ";
-	private final String TURN1 = "Turn # 1";
-	private final String TURN_PREFIX = "Turn # ";
-	private final String TURN_AFTER = " - ";
-	private final String DREW_PREFIX = " drew ";
-	private final String PLAY_PREFIX = " played ";
-	private final String PLAY_SUB_PREFIX = "- ";
-	private final String PLAY_CARD_PREFIX = "   • ";
-	
-	@Autowired
-	public LogAnalayzer(PokeApiService pokeApiService) {
-		this.pokeApiService = pokeApiService;
-	}
 	/**
 	 * プレイヤー名を取得する
 	 * @return
@@ -62,11 +45,11 @@ public class LogAnalayzer {
 		InputData.getInst().reset();
 		while( InputData.getInst().next()&& num < 2 ) {
 			String line = InputData.getInst().readAndAhead();
-			if( line.endsWith(DRAW7OP)) {
-				String name = line.replace(DRAW7OP, "");
+			if( line.endsWith(LogConst.DRAW7OP)) {
+				String name = line.replace(LogConst.DRAW7OP, "");
 				//2行したにカードの種類があれば、自分
 				String mark = InputData.getInst().readOffset(1);
-				if( mark.startsWith(CARDMAKR)) {
+				if( mark.startsWith(LogConst.CARDMAKR)) {
 					playerdto.setMyName( name );
 					num++;
 				}else {
@@ -79,13 +62,13 @@ public class LogAnalayzer {
 		InputData.getInst().reset();
 		while( InputData.getInst().next() ) {
 			String line = InputData.getInst().readAndAhead();
-			if( line.endsWith(DFIRST) ) {
+			if( line.endsWith(LogConst.DFIRST) ) {
 				//先行をとった人は・・・
-				String name = line.replace(DFIRST,"");
+				String name = line.replace(LogConst.DFIRST,"");
 				playerdto.setFirst( (name.equals(playerdto.getMyName())) );
-			}else if(line.endsWith(DSECOND)) {
+			}else if(line.endsWith(LogConst.DSECOND)) {
 				//後攻を取った人は・・・
-				String name = line.replace(DSECOND,"");
+				String name = line.replace(LogConst.DSECOND,"");
 				playerdto.setFirst( !(name.equals(playerdto.getMyName())) );
 			}
 		}
@@ -103,14 +86,14 @@ public class LogAnalayzer {
 	public Hand getFirstHand(String myName) throws JsonMappingException, JsonProcessingException, NotInitializeException {
 		Hand hand = new Hand();
 		//初手の７枚を探す
-		String firstHandMsg = myName + DRAW7OP;
+		String firstHandMsg = myName + LogConst.DRAW7OP;
 		String cards = "";
 		InputData.getInst().reset();
 		while( InputData.getInst().next() ) {
 			String line = InputData.getInst().readAndAhead();
 			if( line.equals(firstHandMsg)) {
 				cards = InputData.getInst().readOffset(1);
-				cards = cards.replace(CARDMAKR, "");
+				cards = cards.replace(LogConst.CARDMAKR, "");
 				break;
 			}
 		}
@@ -118,7 +101,7 @@ public class LogAnalayzer {
 		//カンマ区切りの七枚を取得する
 		String[] cardarry = cards.split(",");
 		for( String cardname : cardarry) {
-			hand.addCard( getCardDto(cardname) );
+			hand.addCard( PokeApiService.getCardDto(cardname) );
 		}
 		
 		return hand;
@@ -139,35 +122,35 @@ public class LogAnalayzer {
 		BattleAreaDto oppArea = new BattleAreaDto();
 		String pName;
 		//自分のバトル場を取得する
-		String myStartStr = myName + PLAYED;
-		String oppStartStr = oppName + PLAYED;
+		String myStartStr = myName + LogConst.PLAYED;
+		String oppStartStr = oppName + LogConst.PLAYED;
 		
 		boolean turn1Flag = false;
 		InputData.getInst().reset();
 		while( InputData.getInst().next()&& !turn1Flag ) {
 			String line = InputData.getInst().readAndAhead();
 			if( line.startsWith(myStartStr)&& 
-					line.endsWith(TOACTIVESP)) {
+					line.endsWith(LogConst.TOACTIVESP)) {
 				//自分のバトル場
-				pName = StrUtil.removeStr(line,new String[]{myStartStr,TOACTIVESP});
-				myArea.setBattlefield(getCardDto(pName));
+				pName = StrUtil.removeStr(line,new String[]{myStartStr,LogConst.TOACTIVESP});
+				myArea.setBattlefield(PokeApiService.getCardDto(pName));
 			}else if(line.startsWith(oppStartStr)&& 
-					line.endsWith(TOACTIVESP)) {
+					line.endsWith(LogConst.TOACTIVESP)) {
 				//相手のバトル場
-				pName = StrUtil.removeStr(line,new String[]{oppStartStr,TOACTIVESP});
-				oppArea.setBattlefield(getCardDto(pName));
+				pName = StrUtil.removeStr(line,new String[]{oppStartStr,LogConst.TOACTIVESP});
+				oppArea.setBattlefield(PokeApiService.getCardDto(pName));
 				
 			}else if( line.startsWith(myStartStr)&& 
-					line.endsWith(TOBENCH)) {
+					line.endsWith(LogConst.TOBENCH)) {
 				//自分のベンチ
-				pName = StrUtil.removeStr(line,new String[]{myStartStr,TOBENCH});
-				myArea.adddBechField(getCardDto(pName));
+				pName = StrUtil.removeStr(line,new String[]{myStartStr,LogConst.TOBENCH});
+				myArea.adddBechField(PokeApiService.getCardDto(pName));
 			}else if(line.startsWith(oppStartStr)&& 
-					line.endsWith(TOBENCH)) {
+					line.endsWith(LogConst.TOBENCH)) {
 				//相手のベンチ
-				pName = StrUtil.removeStr(line,new String[]{oppStartStr,TOBENCH});
-				oppArea.adddBechField(getCardDto(pName));
-			}else if(line.startsWith(TURN1)) {
+				pName = StrUtil.removeStr(line,new String[]{oppStartStr,LogConst.TOBENCH});
+				oppArea.adddBechField(PokeApiService.getCardDto(pName));
+			}else if(line.startsWith(LogConst.TURN1)) {
 				turn1Flag = true;
 			}
 		}
@@ -207,39 +190,59 @@ public class LogAnalayzer {
 			(player.isFirst() ? player.getMyName():player.getOppName()),
 			(player.isFirst() ? player.getOppName():player.getMyName()),
 		};
-		
+
+		Turn trunObj = null;
+		String turnPlayer = turnPlayers[0];
 		//1ターン目まで読み飛ばし
-		int turn1LineNum = 0;
 		InputData.getInst().reset();
 		while( InputData.getInst().next() ) {
-			if( InputData.getInst().readAndAhead().startsWith(TURN1)) {
+			if( InputData.getInst().readAndAhead().startsWith(LogConst.TURN1)) {
+				trunObj = new Turn();
+				trunObj.setTurnNo(1);
+				trunObj.setFirst(true);
+				trunObj.setTurnPlayerName(turnPlayer);
 				break;
 			}
 		}
 		//対戦情報読み出し
 		while(InputData.getInst().next()) {
 			String line = InputData.getInst().readAndAhead();
-			String turnPlayer = turnPlayers[pidx];
-			String turnStr = TURN_PREFIX + turn + TURN_AFTER;
-			PlayDetail playDetail = null;
+			String turnStr = LogConst.TURN_PREFIX + turn + LogConst.TURN_AFTER;
+			Play play = null;
 			if( line.startsWith(turnStr)) {
+				//ターンの切り替え
 				logger.info("ターン;"+line);
+				if(trunObj != null) {
+					turnList.addTurn(trunObj);
+				}
+				trunObj = new Turn();
 				if( pidx == 0) {
 					turn++;
 				}
 				pidx = (pidx==0?1:0);
-			}else if(line.startsWith(turnPlayer+DREW_PREFIX)) {
+				turnPlayer = turnPlayers[pidx];
+				trunObj.setTurnNo(turn);
+				trunObj.setTurnPlayerName(turnPlayer);
+				trunObj.setFirst((pidx==0?true:false));
+			}else if(line.startsWith(turnPlayer+LogConst.PREFIX_DRAW)) {
 				//ドロー
-				logger.info("draw:"+line);
-				playDetail = drawProcess( player,turnPlayer,line );
-			}else if(line.startsWith(turnPlayer+PLAY_PREFIX)) {
+				logger.info("draw:"+line); 
+				play = PlayAnalayzerFactory.getInst(PlayId.DRAW).getPlay( player,turnPlayer,line );
+				trunObj.addPlay(play);
+			}else if(line.startsWith(turnPlayer+LogConst.PREFIX_PLAYED)) {
 				//プレイ
 				logger.info("played:"+line);
 				//サブデータを取得する‘
 				List<String> subData = getSubData();
-				playDetail = getPlayDetail(player,turnPlayer,line,subData);
+				play = PlayAnalayzerFactory.getInst(PlayId.PLAY).getPlay(player,turnPlayer,line,subData);
+				trunObj.addPlay(play);
+			}else if(line.startsWith(turnPlayer+LogConst.PREFIX_ATTACHED)) {
+				logger.info("attached:"+line);
+				play = PlayAnalayzerFactory.getInst(PlayId.ATTACH).getPlay(player,turnPlayer,line);
+				trunObj.addPlay(play);
 			}else {
 			}
+			
 		}
 		return turnList;
 	}
@@ -248,10 +251,11 @@ public class LogAnalayzer {
 		List<String> subData = new ArrayList<>();
 		boolean isSub = true;
 		while(isSub) {
-			String line = InputData.getInst().readAndAhead();
-			if( line.startsWith(PLAY_SUB_PREFIX) || 
-					line.startsWith(PLAY_CARD_PREFIX) ) {
+			String line = InputData.getInst().read();
+			if( line.startsWith(LogConst.PLAY_SUB_PREFIX) || 
+					line.startsWith(LogConst.PLAY_CARD_PREFIX) ) {
 				subData.add(line);
+				InputData.getInst().ahead();
 				logger.info("subdata:"+line);
 			}else {
 				isSub = false;
@@ -260,56 +264,5 @@ public class LogAnalayzer {
 		return subData;
 	}
 	
-	private PlayDetail getPlayDetail(PlayerDto player,
-									String turnPlayer,
-									String line,
-									List<String> subData) {
-		PlayDetail playDetail = null;
-		
-		//ベンチに出す
-		if( line.endsWith(TOBENCH)) {
-			//ベンチにポケモンを出す
-			String value = line.replace(turnPlayer+PLAY_PREFIX, "").replace(TOBENCH, "");
-		}else if(line.endsWith(TOSTUDIUM)) {
-			//スタジアムを出す
-			String value = line.replace(turnPlayer+PLAY_PREFIX, "").replace(TOSTUDIUM, "");
-		}else {
-			//何かを使った
-		}
-		
-		return playDetail;
-	}
-	private PlayDetail drawProcess(PlayerDto player,String turnPlayer,String line) {
-		Draw playDetail = new Draw();
-		
-		playDetail.setPlayerName(turnPlayer);
-		//何を引いたかを確認
-		if( turnPlayer.equals(player.getMyName())) {
-			//自分の場合
-			String value = line.replace(turnPlayer+DREW_PREFIX, "").replace(".", "");
-			playDetail.setDrawCard( getCardDto(value) );
-		}else {
-			playDetail.setDrawCard(null);
-		}
-		
-		return playDetail;
-	}
 	
-	private CardDto getCardDto(String cardname) {
-		CardDto card = new CardDto();
-		cardname = cardname.trim();
-		String imgPath;
-		
-		try {
-			imgPath = pokeApiService.findSmallImage(cardname);
-			card.setName(cardname);
-			card.setImgPath(imgPath);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			card.setName("");
-		}
-
-		return card;
-	}
 }

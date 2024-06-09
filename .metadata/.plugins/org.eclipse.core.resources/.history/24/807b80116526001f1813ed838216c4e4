@@ -1,0 +1,22 @@
+package com.example.logviewe.service.play;
+
+import java.util.List;
+
+import com.example.logviewe.param.Play;
+import com.example.logviewe.param.PlayerDto;
+
+public class PlayDetailAnalayzer implements PlayAnalayzer {
+
+	@Override
+	public Play getPlay(PlayerDto player, String turnPlayer, String line) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Play getPlay(PlayerDto player, String turnPlayer, String line, List<String> subData) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

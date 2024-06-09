@@ -1,0 +1,7 @@
+package com.example.logviewe.param.play;
+
+public class Attached extends PlayDetail{
+	CardDto attacheCardDto;
+	CardDto toCardDto;
+	boolean isActivePokemon;
+}

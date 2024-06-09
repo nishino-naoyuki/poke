@@ -21,6 +21,8 @@ import com.example.logviewe.param.FieldDto;
 import com.example.logviewe.param.GameInfo;
 import com.example.logviewe.param.Hand;
 import com.example.logviewe.param.PlayerDto;
+import com.example.logviewe.param.Turn;
+import com.example.logviewe.param.TurnList;
 import com.example.logviewe.param.input.InputData;
 import com.example.logviewe.service.LogAnalayzer;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -90,11 +92,18 @@ public class BattleController {
 		GameInfo gameInfo = (GameInfo)session.getAttribute("gameInfo");
 		
 		logana.getInitilaize(gameInfo);
+		TurnList turnList = logana.getTurnList(gameInfo.getPlayers());
 
     	session.setAttribute("gameInfo", gameInfo);
+    	session.setAttribute("turnList", turnList);
+    	session.setAttribute("turnNum", 1);
     	
+    	Turn turn = turnList.getTurnList().get(0);
+    	String turnMsg = (turn.isFirst()?"先行":"後攻") + turn.getTurnNo()+ "TURN";
 		mv.addObject("fieldDto",gameInfo.getField());
 		mv.addObject("hand",gameInfo.getHand());
+		mv.addObject("turn",turn);
+		mv.addObject("turnMsg",turnMsg);
     	mv.setViewName("field");
     	
     	logana.getTurnList(gameInfo.getPlayers());

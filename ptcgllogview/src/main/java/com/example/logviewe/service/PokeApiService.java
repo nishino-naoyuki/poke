@@ -11,19 +11,21 @@ import org.springframework.web.client.RestTemplate;
 
 import com.example.logviewe.json.PokecaInfo;
 import com.example.logviewe.json.ResponseInfo;
+import com.example.logviewe.param.CardDto;
+import com.example.logviewe.param.LogConst;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class PokeApiService {
-	private final String SEARCH_CARDS = "https://api.pokemontcg.io/v2/cards";
-	Logger logger = LoggerFactory.getLogger(PokeApiService.class);
+	private static final String SEARCH_CARDS = "https://api.pokemontcg.io/v2/cards";
+	static Logger logger = LoggerFactory.getLogger(PokeApiService.class);
 
-	Map<String,String> map = new HashMap<>();
+	private static Map<String,String> map = new HashMap<>();
 	
-	public String findSmallImage(String name) throws JsonMappingException, JsonProcessingException {
-
+	public static String findSmallImage(String name) throws JsonMappingException, JsonProcessingException {
+		name = triming(name);
 		//すでにロード済みならAPIに投げない
 		String imgPath = map.get(name);
 		if( imgPath != null ) {
@@ -48,5 +50,31 @@ public class PokeApiService {
         
         map.put(name, imgPath);
         return imgPath;
+	}
+
+	public static CardDto getCardDto(String cardname) {
+		CardDto card = new CardDto();
+		cardname = cardname.trim();
+		String imgPath;
+		
+		try {
+			imgPath = findSmallImage(cardname);
+			card.setName(cardname);
+			card.setImgPath(imgPath);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			card.setName("");
+		}
+
+		return card;
+	}
+	
+	private static String triming(String cardName) {
+		if( cardName.endsWith(LogConst.CONMA)) {
+			cardName = cardName.substring(0, cardName.length()-1);
+		}
+		
+		return cardName;
 	}
 }

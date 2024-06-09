@@ -1,4 +1,4 @@
-content_assist_lru_history=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?><history maxLHS\="100" maxRHS\="10"/>
+content_assist_lru_history=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?><history maxLHS\="100" maxRHS\="10"><lhs name\="java.lang.Enum"><rhs name\="com.example.logviewe.param.PlayId"/></lhs><lhs name\="java.lang.constant.Constable"><rhs name\="com.example.logviewe.param.PlayId"/></lhs><lhs name\="com.example.logviewe.param.PlayId"><rhs name\="com.example.logviewe.param.PlayId"/></lhs></history>
 content_assist_number_of_computers=14
 content_assist_proposals_background=255,255,255
 content_assist_proposals_foreground=0,0,0

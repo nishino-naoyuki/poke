@@ -7,7 +7,13 @@
 
 <body>
 	<div class="playdetail">
-		aaaa
+		<h3 th:text="${turnMsg}"></h3>
+		<h4 th:text="|${turn.turnPlayerName}のターン|"></h4>
+		<th:block th:each="play : ${turn.plays}">
+			<div th:text="${play.msg}">
+			</div>	
+			<img th:src="${play.imgUrl}">
+		</th:block>
 	</div>
 	<div class="fieldarea">
 		<p>対戦準備</p>

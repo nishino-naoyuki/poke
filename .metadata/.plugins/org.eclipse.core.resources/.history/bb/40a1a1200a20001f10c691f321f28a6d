@@ -1,6 +1,0 @@
-package com.example.logviewe.service;
-
-@Service
-public class PokeApiService {
-
-}
