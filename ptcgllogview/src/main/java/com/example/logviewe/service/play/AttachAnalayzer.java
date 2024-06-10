@@ -3,6 +3,7 @@ package com.example.logviewe.service.play;
 import java.util.List;
 
 import com.example.logviewe.param.CardDto;
+import com.example.logviewe.param.GameInfo;
 import com.example.logviewe.param.LogConst;
 import com.example.logviewe.param.Play;
 import com.example.logviewe.param.PlayId;
@@ -10,13 +11,15 @@ import com.example.logviewe.param.PlayerDto;
 import com.example.logviewe.param.play.Attache;
 import com.example.logviewe.service.PokeApiService;
 
-public class AttachAnalayzer implements PlayAnalayzer {
+public class AttachAnalayzer extends PlayAnalazerBase implements PlayAnalayzer {
 
 	@Override
-	public Play getPlay(PlayerDto player, String turnPlayer, String line) {
+	public Play getPlay(GameInfo gameInfo, String turnPlayer, String line) {
 		Play play = new Play();
+
+		//現状をコピーする
+		copyNowStuation(play,PlayId.ATTACH,gameInfo);
 		
-		play.setPlayId(PlayId.ATTACH);
 		Attache playDetail = new Attache();
 		String trimedStr = line.replace(turnPlayer+LogConst.PREFIX_ATTACHED, "");
 		
@@ -54,8 +57,8 @@ public class AttachAnalayzer implements PlayAnalayzer {
 	}
 
 	@Override
-	public Play getPlay(PlayerDto player, String turnPlayer, String line, List<String> subData) {
-		return getPlay(player,turnPlayer,line);
+	public Play getPlay(GameInfo gameInfo, String turnPlayer, String line, List<String> subData) {
+		return getPlay(gameInfo,turnPlayer,line);
 	}
 
 }

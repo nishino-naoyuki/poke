@@ -92,7 +92,7 @@ public class BattleController {
 		GameInfo gameInfo = (GameInfo)session.getAttribute("gameInfo");
 		
 		logana.getInitilaize(gameInfo);
-		TurnList turnList = logana.getTurnList(gameInfo.getPlayers());
+		TurnList turnList = logana.getTurnList(gameInfo);
 
     	session.setAttribute("gameInfo", gameInfo);
     	session.setAttribute("turnList", turnList);
@@ -105,8 +105,6 @@ public class BattleController {
 		mv.addObject("turn",turn);
 		mv.addObject("turnMsg",turnMsg);
     	mv.setViewName("field");
-    	
-    	logana.getTurnList(gameInfo.getPlayers());
     	
     	return mv;
 	}

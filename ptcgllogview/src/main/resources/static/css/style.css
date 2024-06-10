@@ -32,13 +32,22 @@
 	margin:0 auto 0 auto;
 }
 .fieldarea{
-	width: 80%;
+	width: 60%;
 	height: 95vh;
-	margin:0 auto 0 0;
+	margin:0 auto 0 auto;
 }
-.playdetail{
+.playdetailR{
 	position: fixed;
 	right: 0;
 	width: 20%;
 	background-color: aqua;
+}
+.playdetailL{
+	position: fixed;
+	left: 0;
+	width: 20%;
+	background-color: cadetblue;
+}
+.sideimg{
+	width:10%;
 }

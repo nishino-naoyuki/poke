@@ -2,6 +2,7 @@ package com.example.logviewe.service.play;
 
 import java.util.List;
 
+import com.example.logviewe.param.GameInfo;
 import com.example.logviewe.param.LogConst;
 import com.example.logviewe.param.Play;
 import com.example.logviewe.param.PlayId;
@@ -10,16 +11,16 @@ import com.example.logviewe.param.play.PlayDetail;
 import com.example.logviewe.service.PokeApiService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-public class PlayDetailAnalayzer implements PlayAnalayzer {
+public class PlayDetailAnalayzer extends PlayAnalazerBase implements PlayAnalayzer {
 
 	@Override
-	public Play getPlay(PlayerDto player, String turnPlayer, String line) {
+	public Play getPlay(GameInfo gameInfo, String turnPlayer, String line) {
 		// TODO Auto-generated method stub
-		return getPlay(player,turnPlayer,line,null);
+		return getPlay(gameInfo,turnPlayer,line,null);
 	}
 
 	@Override
-	public Play getPlay(PlayerDto player, String turnPlayer, String line, List<String> subData) {
+	public Play getPlay(GameInfo gameInfo, String turnPlayer, String line, List<String> subData) {
 		PlayDetail playDetail = null;
 		Play play = new Play();
 		String msg = "";
@@ -27,17 +28,18 @@ public class PlayDetailAnalayzer implements PlayAnalayzer {
 		//ベンチに出す
 		if( line.endsWith(LogConst.TOBENCH)) {
 			//ベンチにポケモンを出す
-			play.setPlayId(PlayId.BENCH);
+			//現状をコピーする
+			copyNowStuation(play,PlayId.BENCH,gameInfo);
 			String value = line.replace(turnPlayer+LogConst.PREFIX_PLAYED, "").replace(LogConst.TOBENCH, "");
 			msg = PlayId.BENCH.getMsg() + ":" + value;
 		}else if(line.endsWith(LogConst.TOSTUDIUM)) {
 			//スタジアムを出す
-			play.setPlayId(PlayId.STUDIUM);
+			copyNowStuation(play,PlayId.STUDIUM,gameInfo);
 			String value = line.replace(turnPlayer+LogConst.PREFIX_PLAYED, "").replace(LogConst.TOSTUDIUM, "");
 			msg = PlayId.STUDIUM.getMsg() + ":" + value;
 		}else {
 			//何かを使った
-			play.setPlayId(PlayId.PLAY);
+			copyNowStuation(play,PlayId.PLAY,gameInfo);
 			String value = line.replace(turnPlayer+LogConst.PREFIX_PLAYED, "");
 			try {
 				imgUrl = PokeApiService.findSmallImage(value);

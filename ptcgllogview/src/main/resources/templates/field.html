@@ -2,17 +2,26 @@
 <html lang="en">
 
 <head>
-	<link th:href="@{/css/style.css?v=1.0.2}" rel="stylesheet">
+	<link th:href="@{/css/style.css?v=1.0.3}" rel="stylesheet">
 </head>
 
 <body>
-	<div class="playdetail">
+	<div class="playdetailR">
 		<h3 th:text="${turnMsg}"></h3>
 		<h4 th:text="|${turn.turnPlayerName}のターン|"></h4>
 		<th:block th:each="play : ${turn.plays}">
 			<div th:text="${play.msg}">
 			</div>	
-			<img th:src="${play.imgUrl}">
+			<div class="sideimg"><img th:src="${play.imgUrl}"></div>
+		</th:block>
+	</div>
+	<div class="playdetailL">
+		<h3 th:text="${turnMsg}"></h3>
+		<h4 th:text="|${turn.turnPlayerName}のターン|"></h4>
+		<th:block th:each="play : ${turn.plays}">
+			<div th:text="${play.msg}">
+			</div>	
+			<img th:src="${play.imgUrl}" class="sideimg">
 		</th:block>
 	</div>
 	<div class="fieldarea">

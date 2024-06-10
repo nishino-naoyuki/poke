@@ -19,4 +19,12 @@ public class Hand {
 	public void removeCard(CardDto card) {
 		cards.remove(card);
 	}
+	
+	public Hand clone() {
+		Hand hand = new Hand();
+		for( CardDto card: cards) {
+			hand.addCard(card.clone());
+		}
+		return hand;
+	}
 }

@@ -10,4 +10,9 @@ public class Play {
 	private PlayDetail playDetail;
 	private String msg;
 	private String imgUrl;	//カードがない場合は空文字
+	
+	//このプレイをする前の状態
+	private BattleAreaDto myArea;
+	private BattleAreaDto oppArea;
+	private Hand hand;
 }

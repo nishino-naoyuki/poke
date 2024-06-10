@@ -182,10 +182,12 @@ public class LogAnalayzer {
 		return srcHand;
 	}
 	
-	public TurnList getTurnList(PlayerDto player) throws NotInitializeException {
+	public TurnList getTurnList(GameInfo gameInfo) throws NotInitializeException {
 		TurnList turnList = new TurnList();
+		PlayerDto player = gameInfo.getPlayers();
 		int turn = 1;
 		int pidx = 0;
+		GameInfo wkGameInfo = gameInfo.clone();
 		String[] turnPlayers = {
 			(player.isFirst() ? player.getMyName():player.getOppName()),
 			(player.isFirst() ? player.getOppName():player.getMyName()),
@@ -227,18 +229,18 @@ public class LogAnalayzer {
 			}else if(line.startsWith(turnPlayer+LogConst.PREFIX_DRAW)) {
 				//ドロー
 				logger.info("draw:"+line); 
-				play = PlayAnalayzerFactory.getInst(PlayId.DRAW).getPlay( player,turnPlayer,line );
+				play = PlayAnalayzerFactory.getInst(PlayId.DRAW).getPlay( wkGameInfo,turnPlayer,line );
 				trunObj.addPlay(play);
 			}else if(line.startsWith(turnPlayer+LogConst.PREFIX_PLAYED)) {
 				//プレイ
 				logger.info("played:"+line);
 				//サブデータを取得する‘
 				List<String> subData = getSubData();
-				play = PlayAnalayzerFactory.getInst(PlayId.PLAY).getPlay(player,turnPlayer,line,subData);
+				play = PlayAnalayzerFactory.getInst(PlayId.PLAY).getPlay(wkGameInfo,turnPlayer,line,subData);
 				trunObj.addPlay(play);
 			}else if(line.startsWith(turnPlayer+LogConst.PREFIX_ATTACHED)) {
 				logger.info("attached:"+line);
-				play = PlayAnalayzerFactory.getInst(PlayId.ATTACH).getPlay(player,turnPlayer,line);
+				play = PlayAnalayzerFactory.getInst(PlayId.ATTACH).getPlay(wkGameInfo,turnPlayer,line);
 				trunObj.addPlay(play);
 			}else {
 			}
