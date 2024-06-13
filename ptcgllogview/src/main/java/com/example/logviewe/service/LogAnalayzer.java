@@ -186,7 +186,7 @@ public class LogAnalayzer {
 		TurnList turnList = new TurnList();
 		PlayerDto player = gameInfo.getPlayers();
 		int turn = 1;
-		int pidx = 0;
+		int pidx = LogConst.FIRST;
 		GameInfo wkGameInfo = gameInfo.clone();
 		String[] turnPlayers = {
 			(player.isFirst() ? player.getMyName():player.getOppName()),
@@ -218,10 +218,10 @@ public class LogAnalayzer {
 					turnList.addTurn(trunObj);
 				}
 				trunObj = new Turn();
-				if( pidx == 0) {
+				if( pidx == LogConst.SECOND) {
 					turn++;
 				}
-				pidx = (pidx==0?1:0);
+				pidx = (pidx==LogConst.FIRST? LogConst.SECOND:LogConst.FIRST);
 				turnPlayer = turnPlayers[pidx];
 				trunObj.setTurnNo(turn);
 				trunObj.setTurnPlayerName(turnPlayer);

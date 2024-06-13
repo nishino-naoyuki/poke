@@ -36,9 +36,9 @@ public class DrawAnalayzer extends PlayAnalazerBase implements PlayAnalayzer {
 			playDetail.setDrawCard(null);
 			msg = PlayId.DRAW.getMsg();
 		}
+		playDetail.setMsg(msg);
+		playDetail.setImgUrl(imgUrl);
 		play.setPlayDetail(playDetail);
-		play.setMsg(msg);
-		play.setImgUrl(imgUrl);
 		
 		return play;
 	}

@@ -8,8 +8,6 @@ import lombok.Data;
 public class Play {
 	private PlayId playId;
 	private PlayDetail playDetail;
-	private String msg;
-	private String imgUrl;	//カードがない場合は空文字
 	
 	//このプレイをする前の状態
 	private BattleAreaDto myArea;

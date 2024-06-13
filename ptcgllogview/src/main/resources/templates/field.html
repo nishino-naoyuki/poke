@@ -2,26 +2,26 @@
 <html lang="en">
 
 <head>
-	<link th:href="@{/css/style.css?v=1.0.3}" rel="stylesheet">
+	<link th:href="@{/css/style.css?v=1.0.4}" rel="stylesheet">
 </head>
 
 <body>
 	<div class="playdetailR">
-		<h3 th:text="${turnMsg}"></h3>
-		<h4 th:text="|${turn.turnPlayerName}のターン|"></h4>
-		<th:block th:each="play : ${turn.plays}">
-			<div th:text="${play.msg}">
+		<h3 th:text="${turnMsgR}"></h3>
+		<h4 th:text="|${turnR.turnPlayerName}のターン|"></h4>
+		<th:block th:each="play : ${turnR.plays}">
+			<div th:text="${play.playDetail.msg}">
 			</div>	
-			<div class="sideimg"><img th:src="${play.imgUrl}"></div>
+			<img class="sideimg" th:src="${play.playDetail.imgUrl}">
 		</th:block>
 	</div>
 	<div class="playdetailL">
-		<h3 th:text="${turnMsg}"></h3>
-		<h4 th:text="|${turn.turnPlayerName}のターン|"></h4>
-		<th:block th:each="play : ${turn.plays}">
-			<div th:text="${play.msg}">
+		<h3 th:text="${turnMsgL}"></h3>
+		<h4 th:text="|${turnL.turnPlayerName}のターン|"></h4>
+		<th:block th:each="play : ${turnL.plays}">
+			<div th:text="${play.playDetail.msg}">
 			</div>	
-			<img th:src="${play.imgUrl}" class="sideimg">
+			<img th:src="${play.playDetail.imgUrl}" class="sideimg">
 		</th:block>
 	</div>
 	<div class="fieldarea">

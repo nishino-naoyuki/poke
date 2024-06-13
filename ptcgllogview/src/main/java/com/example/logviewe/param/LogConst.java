@@ -18,10 +18,20 @@ public class LogConst {
 	public static  final String CONMA = ".";
 	public static  final String TO = " to ";
 	
+	public static final int FIRST = 0;
+	public static final int SECOND = 1;
+
+	public static final String PREFIX_SWITCH = "'s ";
+	public static final String MID_SWITCH = " was switched with ";
+	public static final String SUFFIX_SWITCH = " to become the Active Pokémon.";
+	
 	public static  final String PREFIX_DRAW = " drew ";
 	public static  final String PREFIX_PLAYED = " played ";
 	public static  final String PREFIX_ATTACHED = " attached ";
 	
 	public static final String SUFFIX_INACTIVE = " in the Active Spot.";
 	public static final String SUFFIX_ONBENCH = " on the Bench.";
+	public static final String SUFFIX_TOBENCH = " and played it to the Bench.";
+	public static final String SUFFIX_THEMTOBENCH = "played them to the Bench";
+	public static final String SUFFIX_SHUFFUL = " shuffled their deck.";
 }

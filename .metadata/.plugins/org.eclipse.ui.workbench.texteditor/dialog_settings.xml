@@ -8,6 +8,7 @@
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="to the Bench"/>
 			<item value="fieldarea"/>
 			<item value="getCardDto"/>
 			<item value="findSmallImage"/>

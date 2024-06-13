@@ -1,8 +1,0 @@
-package com.example.logviewe.param.input;
-
-import java.util.List;
-
-@Data
-public class InputData {
-	private List<String> blogList;
-}

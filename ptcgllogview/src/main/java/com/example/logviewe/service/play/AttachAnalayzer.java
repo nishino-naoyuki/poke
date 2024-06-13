@@ -49,9 +49,10 @@ public class AttachAnalayzer extends PlayAnalazerBase implements PlayAnalayzer {
 		
 		msg = attachedCardName + "を" + toPokemon + "につけた";
 		
+		playDetail.setMsg(msg);
+		playDetail.setImgUrl(attachedCard.getImgPath());
+		
 		play.setPlayDetail(playDetail);
-		play.setMsg(msg);
-		play.setImgUrl(attachedCard.getImgPath());
 		
 		return play;
 	}

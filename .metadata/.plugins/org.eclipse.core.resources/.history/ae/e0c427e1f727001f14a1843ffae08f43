@@ -1,0 +1,5 @@
+package com.example.logviewe.param.play;
+
+public class UseCard extends PlayDetail {
+
+}
