@@ -1,0 +1,41 @@
+package com.example.logviewe.service.play;
+
+import java.util.List;
+
+import com.example.logviewe.param.BattleAreaDto;
+import com.example.logviewe.param.CardDto;
+import com.example.logviewe.param.GameInfo;
+import com.example.logviewe.param.Play;
+import com.example.logviewe.param.PlayId;
+import com.example.logviewe.service.PokeApiService;
+
+public abstract class PlayAnalazerBase {
+
+	public void copyNowStuation(Play play,PlayId playId,GameInfo gameInfo) {
+
+		play.setPlayId(playId);
+		//現状をコピーする
+		play.setHand( gameInfo.getHand().clone() );
+		play.setMyArea( gameInfo.getField().getMyArea().clone() );
+		play.setOppArea( gameInfo.getField().getOppArea().clone() );
+	}
+	
+	protected void switchPoke(BattleAreaDto field,String activePoke,String benchPoke) {
+		
+		List<CardDto> benchList = field.getBenchfield();
+		//ベンチからバトル場へ行くポケモンを削除して今のバトル場のポケモンをベンチへ追加しばとるばへ
+		for(int i=0; i<benchList.size(); i++) {
+			CardDto benchCard = benchList.get(i);
+			if( benchCard.getName().equals(activePoke)) {
+				benchList.remove(i);
+				break;
+			}
+		}
+		CardDto newActive = PokeApiService.getCardDto(activePoke);
+		CardDto toBenchPoke = PokeApiService.getCardDto(benchPoke);
+		
+		//バトル場セット
+		field.setBattlefield(newActive);
+		//ベンチからバトル場へ行ったポケモンを消す
+	}
+}

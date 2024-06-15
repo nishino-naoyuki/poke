@@ -3,6 +3,9 @@ package com.example.logviewe.service.play;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.example.logviewe.param.BattleAreaDto;
 import com.example.logviewe.param.FieldDto;
 import com.example.logviewe.param.GameInfo;
@@ -18,7 +21,8 @@ import com.example.logviewe.service.PokeApiService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class PlayDetailAnalayzer extends PlayAnalazerBase implements PlayAnalayzer {
-
+	Logger logger = LoggerFactory.getLogger(PlayDetailAnalayzer.class);
+	
 	@Override
 	public Play getPlay(GameInfo gameInfo, String turnPlayer, String line) {
 		// TODO Auto-generated method stub
@@ -31,13 +35,19 @@ public class PlayDetailAnalayzer extends PlayAnalazerBase implements PlayAnalayz
 		Play play = new Play();
 		String msg = "";
 		String imgUrl = "";
+		BattleAreaDto field = (
+				gameInfo.getPlayers().getMyName().equals(turnPlayer)?
+						gameInfo.getField().getMyArea() : gameInfo.getField().getOppArea());
 		//ベンチに出す
 		if( line.endsWith(LogConst.TOBENCH)) {
 			//ベンチにポケモンを出す
 			//現状をコピーする
 			copyNowStuation(play,PlayId.BENCH,gameInfo);
 			String value = line.replace(turnPlayer+LogConst.PREFIX_PLAYED, "").replace(LogConst.TOBENCH, "");
+			Bench bench = getToBench(value,field);
 			msg = PlayId.BENCH.getMsg() + ":" + value;
+			play.setPlayDetail(bench);
+			play.setPlayId(PlayId.BENCH);
 		}else if(line.endsWith(LogConst.TOSTUDIUM)) {
 			//スタジアムを出す
 			copyNowStuation(play,PlayId.STUDIUM,gameInfo);
@@ -45,19 +55,33 @@ public class PlayDetailAnalayzer extends PlayAnalazerBase implements PlayAnalayz
 			msg = PlayId.STUDIUM.getMsg() + ":" + value;
 		}else {
 			//何かを使った
-			play = playAnything(gameInfo,turnPlayer,line,subData);
+			copyNowStuation(play,PlayId.PLAY,gameInfo);
+			play = playAnything(gameInfo,turnPlayer,line,subData,field);
 		}
 		//play.setMsg(msg);
 		//play.setImgUrl(imgUrl);
 		return play;
 	}
 	
-	private Play playAnything(GameInfo gameInfo,String turnPlayer, String line, List<String> subData) {
+	/**
+	 * 
+	 * @param gameInfo
+	 * @param turnPlayer
+	 * @param line
+	 * @param subData
+	 * @param field
+	 * @return
+	 */
+	private Play playAnything(
+			GameInfo gameInfo,
+			String turnPlayer, 
+			String line, 
+			List<String> subData,
+			BattleAreaDto field) {
 		Play play = new Play();
 		UseCard useCard = new UseCard();
 		String imgUrl;
 		String msg = "";
-		copyNowStuation(play,PlayId.PLAY,gameInfo);
 		String value = line.replace(turnPlayer+LogConst.PREFIX_PLAYED, "");
 		try {
 			imgUrl = PokeApiService.findSmallImage(value);
@@ -73,7 +97,7 @@ public class PlayDetailAnalayzer extends PlayAnalazerBase implements PlayAnalayz
 		//サブデータがある場合
 		if( subData.size() > 0 ) {
 			useCard.setSubPlayList(
-					getSubPlayList(gameInfo,turnPlayer,subData)
+					getSubPlayList(gameInfo,turnPlayer,subData,field)
 					);
 		}
 		
@@ -81,8 +105,19 @@ public class PlayDetailAnalayzer extends PlayAnalazerBase implements PlayAnalayz
 		
 		return play;
 	}
-	
-	private List<PlayDetail> getSubPlayList(GameInfo gameInfo,String turnPlayer,List<String> subData){
+	/**
+	 * 
+	 * @param gameInfo
+	 * @param turnPlayer
+	 * @param subData
+	 * @param field
+	 * @return
+	 */
+	private List<PlayDetail> getSubPlayList(
+			GameInfo gameInfo,
+			String turnPlayer,
+			List<String> subData,
+			BattleAreaDto field){
 		int idx = 0;
 		List<PlayDetail> playDetalList = new ArrayList<>();
 		while(idx < subData.size()) {
@@ -93,7 +128,7 @@ public class PlayDetailAnalayzer extends PlayAnalazerBase implements PlayAnalayz
 					subLine = subLine.replace(
 							LogConst.PLAY_SUB_PREFIX+turnPlayer, "");
 					playDetalList = getTurnPlayerSubData(
-							gameInfo,turnPlayer,subLine,subData,idx
+							gameInfo,turnPlayer,subLine,subData,idx,field
 							);
 					
 				}
@@ -103,21 +138,38 @@ public class PlayDetailAnalayzer extends PlayAnalazerBase implements PlayAnalayz
 		
 		return playDetalList;
 	}
-	
+	/**
+	 * 
+	 * @param gameInfo
+	 * @param turnPlayer
+	 * @param subLine
+	 * @param subData
+	 * @param idx
+	 * @param field
+	 * @return
+	 */
 	private List<PlayDetail> getTurnPlayerSubData(
-			GameInfo gameInfo,String turnPlayer,String subLine,List<String> subData,int idx
+			GameInfo gameInfo,
+			String turnPlayer,
+			String subLine,
+			List<String> subData,
+			int idx,
+			BattleAreaDto field
 			){
 		List<PlayDetail> playDetalList = new ArrayList<>();
+		if( gameInfo.getPlayers().getMyName().equals(turnPlayer) ) {
+			field = gameInfo.getField().getMyArea();
+		}else {
+			field = gameInfo.getField().getOppArea();
+		}
 		
 		if(subLine.endsWith(LogConst.SUFFIX_TOBENCH)) {
-			BattleAreaDto field = gameInfo.getField().getMyArea();
-			playDetalList = getToBech(gameInfo,turnPlayer,subLine,field);
+			playDetalList = getToBechSub(gameInfo,turnPlayer,subLine,field);
 			gameInfo.getField().setMyArea(field);
 			
 		}else if(subLine.endsWith(LogConst.SUFFIX_THEMTOBENCH)) {
 			idx++;
 			String value = subData.get(idx);
-			BattleAreaDto field = gameInfo.getField().getMyArea();
 			playDetalList = getToBechList(gameInfo,turnPlayer,value,field);
 			gameInfo.getField().setMyArea(field);
 			//ターンプレイヤーがカードを引いた
@@ -128,14 +180,22 @@ public class PlayDetailAnalayzer extends PlayAnalazerBase implements PlayAnalayz
 			playDetalList = getTurnPlayerDrawCard(value);
 		}else if( subLine.endsWith(LogConst.SUFFIX_SWITCH) ){
 			//入れ替え
-			
+			logger.info("ポケモン入れ替えを使った");
+			playedSwitch(gameInfo,turnPlayer,subLine,field);
 		}else if( subLine.endsWith(LogConst.SUFFIX_SHUFFUL) ){
 			
 		}
 		
 		return playDetalList;
 	}
-	
+	/**
+	 * 
+	 * @param gameInfo
+	 * @param turnPlayer
+	 * @param subLine
+	 * @param field
+	 * @return
+	 */
 	private List<PlayDetail> playedSwitch(
 			GameInfo gameInfo,
 			String turnPlayer,
@@ -143,17 +203,37 @@ public class PlayDetailAnalayzer extends PlayAnalazerBase implements PlayAnalayz
 			BattleAreaDto field){
 		List<PlayDetail> playDetalList = new ArrayList<>();
 		
-		subLine = subLine.replace(LogConst.PREFIX_SWITCH,"");
+		subLine = subLine.replaceFirst(LogConst.PREFIX_SWITCH,"");
 		subLine = subLine.replace(LogConst.SUFFIX_SWITCH,"");
 		
 		int midIdx = subLine.indexOf(LogConst.MID_SWITCH);
+		subLine = subLine.replace(turnPlayer+LogConst.PREFIX_SWITCH, "");
 		
-		String toBenchPoke = subLine.substring(0,midIdx);
+		
 		String toActivePoke = subLine.substring(0,midIdx);
+		String toBenchPoke = subLine.substring(
+				midIdx+LogConst.MID_SWITCH.length(),
+				subLine.length());
+		
+		logger.info(toBenchPoke+"が下がって"+toActivePoke+"がバトル場へ");
+		
+		switchPoke(field,toActivePoke,toBenchPoke);		
 		
 		return playDetalList;
 	}
 
+	private Bench getToBench(
+			String card,
+			BattleAreaDto field
+			) {
+		Bench benchObj = new Bench();
+		benchObj.setDrawCard(PokeApiService.getCardDto(card));
+		benchObj.setMsg(card + "をベンチを出した");
+		benchObj.setImgUrl(benchObj.getDrawCard().getImgPath());
+		field.adddBechField(benchObj.getDrawCard());
+		
+		return benchObj;
+	}
 	/**
 	 * 
 	 * @param gameInfo
@@ -161,7 +241,7 @@ public class PlayDetailAnalayzer extends PlayAnalazerBase implements PlayAnalayz
 	 * @param bench
 	 * @return
 	 */
-	private List<PlayDetail> getToBech(
+	private List<PlayDetail> getToBechSub(
 			GameInfo gameInfo,
 			String turnPlayer,
 			String bench,
@@ -169,14 +249,9 @@ public class PlayDetailAnalayzer extends PlayAnalazerBase implements PlayAnalayz
 		List<PlayDetail> playDetalList = new ArrayList<>();
 		
 		String card = bench.replace(LogConst.PREFIX_DRAW, "").replace(LogConst.SUFFIX_TOBENCH, "");
-		Bench benchObj = new Bench();
-		benchObj.setDrawCard(PokeApiService.getCardDto(card));
-		benchObj.setMsg(card + "をベンチを出した");
-		benchObj.setImgUrl(benchObj.getDrawCard().getImgPath());
+		Bench benchObj = getToBench(card,field);
 		playDetalList.add(benchObj);
-		
-		field.adddBechField(benchObj.getDrawCard());
-		
+				
 		return playDetalList;
 	}
 	/**
