@@ -209,7 +209,7 @@ public class LogAnalayzer {
 		//対戦情報読み出し
 		while(InputData.getInst().next()) {
 			String line = InputData.getInst().readAndAhead();
-			String turnStr = LogConst.TURN_PREFIX + turn + LogConst.TURN_AFTER;
+			String turnStr = LogConst.TURN_PREFIX;
 			Play play = null;
 			if( line.startsWith(turnStr)) {
 				//ターンの切り替え
@@ -241,6 +241,12 @@ public class LogAnalayzer {
 			}else if(line.startsWith(turnPlayer+LogConst.PREFIX_ATTACHED)) {
 				logger.info("attached:"+line);
 				play = PlayAnalayzerFactory.getInst(PlayId.ATTACH).getPlay(wkGameInfo,turnPlayer,line);
+				trunObj.addPlay(play);
+			}else if(line.contains(LogConst.MID_USED) &&
+						!line.endsWith(LogConst.SUFFIX_DAMAGE)) {
+				logger.info("used:"+line);
+				List<String> subData = getSubData();
+				play = PlayAnalayzerFactory.getInst(PlayId.USE).getPlay(wkGameInfo,turnPlayer,line,subData);
 				trunObj.addPlay(play);
 			}else {
 			}

@@ -11,6 +11,8 @@ public class PlayAnalayzerFactory {
 			return new PlayDetailAnalayzer();
 		}else if( playId.equals(PlayId.ATTACH) ) {
 			return new AttachAnalayzer();
+		}else if( playId.equals(PlayId.USE) ) {
+			return new UseAnalayzer();
 		}
 		
 		return null;

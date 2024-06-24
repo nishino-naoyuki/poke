@@ -1,0 +1,63 @@
+package com.example.logviewe.service.play;
+
+import java.util.List;
+
+import com.example.logviewe.param.GameInfo;
+import com.example.logviewe.param.LogConst;
+import com.example.logviewe.param.Play;
+import com.example.logviewe.param.PlayId;
+import com.example.logviewe.param.play.UseAbility;
+import com.example.logviewe.service.PokeApiService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+public class UseAnalayzer extends PlayAnalazerBase implements PlayAnalayzer {
+
+	@Override
+	public Play getPlay(GameInfo gameInfo, String turnPlayer, String line) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Play getPlay(GameInfo gameInfo, String turnPlayer, String line, List<String> subData) {
+		Play play = new Play();
+		copyNowStuation(play,PlayId.USE,gameInfo);
+		
+		UseAbility useAbility = new UseAbility();
+		
+		String msg = "";
+		String pokemon = getPokemon(line,turnPlayer);
+		String value = line.replace(turnPlayer+LogConst.PREFIX_PLAYED, "");
+		String imgUrl = PokeApiService.findSmallImage(value);
+		msg = PlayId.PLAY.getMsg() + ":" + value;
+		
+		useAbility.setMsg(msg);
+		
+		//サブデータがある場合
+		if( subData.size() > 0 ) {
+			useAbility.setEffectList(
+					getSubPlayList(gameInfo,turnPlayer,subData)
+					);
+		}
+		
+		play.setPlayDetail(useAbility);
+		return play;
+	}
+	
+	/**
+	 * どのポケモンがどの特性を使ったかを返す
+	 * @param gameInfo
+	 * @param line
+	 * @param turnPlayer
+	 * @return
+	 */
+	private String getPokemon(String line,String turnPlayer) {
+		
+		String wkStr = line.replace(turnPlayer+LogConst.PREFIX_SWITCH, "");
+		int idx = wkStr.indexOf(LogConst.MID_USED);
+		return wkStr.substring(0, idx);
+		
+	}
+
+
+}

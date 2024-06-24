@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.example.logviewe.Exception.PokemonNotFound;
 import com.example.logviewe.json.PokecaInfo;
 import com.example.logviewe.json.ResponseInfo;
 import com.example.logviewe.param.CardDto;
@@ -24,7 +25,7 @@ public class PokeApiService {
 
 	private static Map<String,String> map = new HashMap<>();
 	
-	public static String findSmallImage(String name) throws JsonMappingException, JsonProcessingException {
+	public static String findSmallImage(String name) throws PokemonNotFound,JsonMappingException, JsonProcessingException {
 		name = triming(name);
 		//すでにロード済みならAPIに投げない
 		String imgPath = map.get(name);
@@ -46,9 +47,13 @@ public class PokeApiService {
         ResponseInfo pokeInfo = mapper.readValue(json, ResponseInfo.class);
 
         PokecaInfo[] dates = pokeInfo.getData();
-        imgPath = dates[0].getImages().getSmall();
-        
-        map.put(name, imgPath);
+        if( dates.length > 0) {
+	        imgPath = dates[0].getImages().getSmall();
+	        
+	        map.put(name, imgPath);
+        }else {
+        	throw new PokemonNotFound(url);
+        }
         return imgPath;
 	}
 
@@ -69,6 +74,7 @@ public class PokeApiService {
 
 		return card;
 	}
+	
 	
 	private static String triming(String cardName) {
 		if( cardName.endsWith(LogConst.CONMA)) {

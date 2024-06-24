@@ -38,17 +38,21 @@
     <fullyQualifiedTypeName name="com.example.logviewe.service.play.PlayAnalayzerFactory"/>
     <fullyQualifiedTypeName name="com.example.logviewe.param.Turn"/>
     <fullyQualifiedTypeName name="com.example.logviewe.service.PokeApiService"/>
-    <fullyQualifiedTypeName name="com.example.logviewe.param.LogConst"/>
     <fullyQualifiedTypeName name="com.example.logviewe.param.play.Attache"/>
     <fullyQualifiedTypeName name="com.example.logviewe.param.Play"/>
     <fullyQualifiedTypeName name="com.example.logviewe.param.GameInfo"/>
-    <fullyQualifiedTypeName name="lombok.Data"/>
     <fullyQualifiedTypeName name="com.example.logviewe.param.play.UseCard"/>
     <fullyQualifiedTypeName name="com.example.logviewe.param.play.Draw"/>
-    <fullyQualifiedTypeName name="java.util.ArrayList"/>
     <fullyQualifiedTypeName name="com.example.logviewe.param.play.Bench"/>
     <fullyQualifiedTypeName name="com.example.logviewe.param.FieldDto"/>
     <fullyQualifiedTypeName name="com.example.logviewe.param.BattleAreaDto"/>
+    <fullyQualifiedTypeName name="com.example.logviewe.param.play.Discard"/>
     <fullyQualifiedTypeName name="com.example.logviewe.param.CardDto"/>
+    <fullyQualifiedTypeName name="lombok.Data"/>
     <fullyQualifiedTypeName name="java.util.List"/>
+    <fullyQualifiedTypeName name="java.util.ArrayList"/>
+    <fullyQualifiedTypeName name="com.example.logviewe.param.play.UseAbility"/>
+    <fullyQualifiedTypeName name="com.example.logviewe.param.LogConst"/>
+    <fullyQualifiedTypeName name="com.example.logviewe.Exception.PokemonNotFound"/>
+    <fullyQualifiedTypeName name="com.example.logviewe.param.play.Studium"/>
 </qualifiedTypeNameHistroy>

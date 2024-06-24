@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <typeInfoHistroy>
     <typeInfo handle="=ptcgllogview/C:\/Program Files\/sts\/sts-4.21.1.RELEASE\/plugins\/org.eclipse.justj.openjdk.hotspot.jre.full.win32.x86_64_17.0.10.v20240120-1143\/jre\/lib\/jrt-fs.jar`java.base=/javadoc_location=/https:\/\/docs.oracle.com\/en\/java\/javase\/17\/docs\/api\/=/=/maven.pomderived=/true=/&lt;java.lang(Exception.class[Exception" modifiers="33" timestamp="1705780210000"/>
+    <typeInfo handle="=ptcgllogview/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.example.logviewe.service.play{PlayAnalazerBase.java[PlayAnalazerBase" modifiers="1025" timestamp="1718448815242"/>
     <typeInfo handle="=ptcgllogview/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.example.logviewe.service.play{PlayAnalayzer.java[PlayAnalayzer" modifiers="513" timestamp="1718025471061"/>
+    <typeInfo handle="=ptcgllogview/C:\/Users\/pc\/.m2\/repository\/com\/fasterxml\/jackson\/core\/jackson-core\/2.17.1\/jackson-core-2.17.1.jar=/maven.pomderived=/true=/=/maven.groupId=/com.fasterxml.jackson.core=/=/maven.artifactId=/jackson-core=/=/maven.version=/2.17.1=/=/maven.scope=/compile=/=/maven.pomderived=/true=/&lt;com.fasterxml.jackson.core(JsonProcessingException.class[JsonProcessingException" modifiers="33" timestamp="1714874075000"/>
     <typeInfo handle="=ptcgllogview/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.example.logviewe.param.play{PlayDetail.java[PlayDetail" modifiers="1025" timestamp="1718113303013"/>
 </typeInfoHistroy>

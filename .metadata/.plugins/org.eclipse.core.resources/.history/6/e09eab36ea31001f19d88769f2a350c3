@@ -1,0 +1,5 @@
+package com.example.logviewe.param.play;
+
+public class UseAbility extends PlayDetail {
+
+}

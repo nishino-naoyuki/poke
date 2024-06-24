@@ -1,0 +1,10 @@
+package com.example.logviewe.param.play;
+
+import java.util.List;
+
+import com.example.logviewe.param.CardDto;
+
+@Data
+public class Discard extends PlayDetail {
+	private List<CardDto> discardList;
+}

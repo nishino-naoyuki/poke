@@ -34,7 +34,7 @@ public class AttachAnalayzer extends PlayAnalazerBase implements PlayAnalayzer {
 		//誰につけたかを取得
 		String toPokemon = "";
 		CardDto toCard;
-		if( trimedStr.endsWith(LogConst.SUFFIX_INACTIVE)) {
+		if( isAttachToActiveMsg(line)) {
 			//アクティブスポットへつけた
 			trimedStr = trimedStr.replace(LogConst.SUFFIX_INACTIVE, "");
 			playDetail.setActivePokemon(true);

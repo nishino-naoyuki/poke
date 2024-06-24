@@ -1,0 +1,86 @@
+package com.example.logviewe.service.play;
+
+import java.util.List;
+
+import com.example.logviewe.param.GameInfo;
+import com.example.logviewe.param.LogConst;
+import com.example.logviewe.param.Play;
+import com.example.logviewe.param.PlayId;
+import com.example.logviewe.param.play.UseAbility;
+import com.example.logviewe.service.PokeApiService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+public class UseAnalayzer extends PlayAnalazerBase implements PlayAnalayzer {
+
+	@Override
+	public Play getPlay(GameInfo gameInfo, String turnPlayer, String line) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Play getPlay(GameInfo gameInfo, String turnPlayer, String line, List<String> subData) {
+		Play play = new Play();
+		copyNowStuation(play,PlayId.USE,gameInfo);
+		
+		UseAbility useAbility = new UseAbility();
+		
+		String msg = "";
+		String imgUrl = "";
+		String pokemon = getPokemon(line,gameInfo);
+		try {
+			imgUrl = PokeApiService.findSmallImage(pokemon);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String abilityName = getAbilityName(line,gameInfo);
+		
+		msg = PlayId.USE.getMsg() + ":" + pokemon + "が" + abilityName + "を使った";
+		
+		useAbility.setMsg(msg);
+		
+		//サブデータがある場合
+		if( subData.size() > 0 ) {
+			useAbility.setEffectList(
+					getSubPlayList(gameInfo,turnPlayer,subData)
+					);
+		}
+		
+		play.setPlayDetail(useAbility);
+		return play;
+	}
+	
+	/**
+	 * どのポケモンがどの特性を使ったかを返す
+	 * @param gameInfo
+	 * @param line
+	 * @param turnPlayer
+	 * @return
+	 */
+	private String getPokemon(String line,GameInfo gameInfo) {
+		
+		String myPlayer = gameInfo.getPlayers().getMyName();
+		String oppPlayer = gameInfo.getPlayers().getOppName();
+		
+		String abPlayer = (line.startsWith(myPlayer)? myPlayer:oppPlayer);
+		
+		String wkStr = line.replace(abPlayer+LogConst.PREFIX_SWITCH, "");
+		int idx = wkStr.indexOf(LogConst.MID_USED);
+		return wkStr.substring(0, idx);
+		
+	}
+
+	private String getAbilityName(String line,GameInfo gameInfo) {
+
+		String myPlayer = gameInfo.getPlayers().getMyName();
+		String oppPlayer = gameInfo.getPlayers().getOppName();
+		
+		String abPlayer = (line.startsWith(myPlayer)? myPlayer:oppPlayer);
+		
+		String wkStr = line.replace(abPlayer+LogConst.PREFIX_SWITCH, "");
+		int idx = wkStr.indexOf(LogConst.MID_USED) + LogConst.MID_USED.length();
+		return wkStr.substring(idx,wkStr.length()-1);
+	}
+
+}

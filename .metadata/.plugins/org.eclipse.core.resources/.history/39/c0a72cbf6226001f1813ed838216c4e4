@@ -1,7 +1,0 @@
-package com.example.logviewe.service.play;
-
-import com.example.logviewe.param.Play;
-
-public interface PlayAnalayzer {
-	Play getPlay();
-}

@@ -1,0 +1,360 @@
+package com.example.logviewe.service.play;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.example.logviewe.param.BattleAreaDto;
+import com.example.logviewe.param.CardDto;
+import com.example.logviewe.param.GameInfo;
+import com.example.logviewe.param.LogConst;
+import com.example.logviewe.param.Play;
+import com.example.logviewe.param.PlayId;
+import com.example.logviewe.param.play.Bench;
+import com.example.logviewe.param.play.Discard;
+import com.example.logviewe.param.play.Draw;
+import com.example.logviewe.param.play.PlayDetail;
+import com.example.logviewe.param.play.Studium;
+import com.example.logviewe.service.PokeApiService;
+
+public abstract class PlayAnalazerBase {
+	Logger logger = LoggerFactory.getLogger(PlayAnalazerBase.class);
+
+	public void copyNowStuation(Play play,PlayId playId,GameInfo gameInfo) {
+
+		play.setPlayId(playId);
+		//現状をコピーする
+		play.setHand( gameInfo.getHand().clone() );
+		play.setMyArea( gameInfo.getField().getMyArea().clone() );
+		play.setOppArea( gameInfo.getField().getOppArea().clone() );
+	}
+	
+	protected void switchPoke(BattleAreaDto field,String activePoke,String benchPoke) {
+		
+		List<CardDto> benchList = field.getBenchfield();
+		CardDto nowActive = field.getBattlefield();
+		//ベンチからバトル場へ行くポケモンを削除して今のバトル場のポケモンをベンチへ追加しばとるばへ
+		for(int i=0; i<benchList.size(); i++) {
+			CardDto benchCard = benchList.get(i);
+			if( benchCard.getName().equals(activePoke)) {
+				field.setBattlefield(benchCard);
+				benchList.remove(i);
+				field.adddBechField(nowActive);
+				break;
+			}
+		}
+	}
+	
+	protected String getSubLinePlayer(GameInfo gameInfo,String subLine) {
+		if( !subLine.startsWith(LogConst.PLAY_SUB_PREFIX) ) {
+			return null;
+		}
+		subLine = subLine.replace(LogConst.PLAY_SUB_PREFIX, "");
+		
+		return (subLine.startsWith( gameInfo.getPlayers().getMyName()) ?
+				gameInfo.getPlayers().getMyName():gameInfo.getPlayers().getOppName());
+	}
+	
+	protected boolean isAttachToBenchMsg(String line) {
+		
+		return(
+				line.contains(LogConst.PREFIX_ATTACHED) &&
+				line.contains(LogConst.TO) &&
+				line.endsWith(LogConst.SUFFIX_ONBENCH)
+				);
+	}
+	protected boolean isAttachToActiveMsg(String line) {
+		
+		return(
+				line.contains(LogConst.PREFIX_ATTACHED) &&
+				line.contains(LogConst.TO) &&
+				line.endsWith(LogConst.SUFFIX_INACTIVE)
+				);
+	}
+	
+
+	/**
+	 * 
+	 * @param gameInfo
+	 * @param turnPlayer
+	 * @param subData
+	 * @param field
+	 * @return
+	 */
+	protected List<PlayDetail> getSubPlayList(
+			GameInfo gameInfo,
+			String turnPlayer,
+			List<String> subData){
+		int idx = 0;
+		List<PlayDetail> playDetalList = new ArrayList<>();
+		String oppPlayer = (
+				gameInfo.getPlayers().getMyName().equals(turnPlayer)?
+						turnPlayer : gameInfo.getPlayers().getOppName());
+		
+		while(idx < subData.size()) {
+			String subLine = subData.get(idx);
+			if(subLine.startsWith(LogConst.PLAY_SUB_PREFIX)){
+				if( subLine.startsWith(LogConst.PLAY_SUB_PREFIX+turnPlayer)) {
+					//ターンプレイヤー
+					subLine = subLine.replace(
+							LogConst.PLAY_SUB_PREFIX+turnPlayer, "");
+					playDetalList = getTurnPlayerSubData(
+							gameInfo,turnPlayer,subLine,subData,idx
+							);
+					
+				}else if(subLine.startsWith(LogConst.PLAY_SUB_PREFIX+oppPlayer) ){
+					//相手プレイヤーについて
+					subLine = subLine.replace(
+							LogConst.PLAY_SUB_PREFIX+oppPlayer, "");
+					playDetalList = getTurnPlayerSubData(
+							gameInfo,oppPlayer,subLine,subData,idx
+							);
+				}
+			}
+			idx++;
+		}
+		
+		return playDetalList;
+	}
+	/**
+	 * 
+	 * @param gameInfo
+	 * @param player
+	 * @param subLine
+	 * @param subData
+	 * @param idx
+	 * @param field
+	 * @return
+	 */
+	protected List<PlayDetail> getTurnPlayerSubData(
+			GameInfo gameInfo,
+			String player,
+			String subLine,
+			List<String> subData,
+			int idx
+			){
+		BattleAreaDto field;
+		List<PlayDetail> playDetalList = new ArrayList<>();
+		if( gameInfo.getPlayers().getMyName().equals(player) ) {
+			field = gameInfo.getField().getMyArea();
+		}else {
+			field = gameInfo.getField().getOppArea();
+		}
+		
+		if(subLine.endsWith(LogConst.SUFFIX_TOBENCH)) {
+			logger.info("ポケモンをベンチに出した");
+			playDetalList = getToBechSub(gameInfo,player,subLine,field);
+			gameInfo.getField().setMyArea(field);
+			
+		}else if(subLine.endsWith(LogConst.SUFFIX_THEMTOBENCH)) {
+			logger.info("複数ポケモンをベンチに出した");
+			idx++;
+			String value = (idx<subData.size() ? subData.get(idx):"");
+			playDetalList = getToBechList(gameInfo,player,value,field);
+			gameInfo.getField().setMyArea(field);
+			//ターンプレイヤーがカードを引いた
+		}else if( subLine.startsWith(LogConst.PREFIX_DRAW) && subLine.endsWith(LogConst.SUFFIX_CARDS)) {
+			logger.info("複数カードを引いた");
+			//引いたカードを取得
+			idx++;
+			String value = (idx<subData.size() ? subData.get(idx):"");
+			playDetalList = getTurnPlayerDrawCards(value);
+		}else if( subLine.startsWith(LogConst.PREFIX_DRAW)) {
+			logger.info("1枚カードを引いた");
+			playDetalList = getTurnPlayerDrawOneCard(subLine);
+		}else if( subLine.endsWith(LogConst.SUFFIX_SWITCH) ){
+			//入れ替え
+			logger.info("ポケモン入れ替えを使った");
+			playDetalList = playedSwitch(gameInfo,player,subLine,field);
+		}else if( subLine.startsWith(LogConst.PREFIX_DISCARDED) && subLine.endsWith(LogConst.SUFFIX_CARDS) ){
+			//入れ替え
+			logger.info("複数カードを捨てた");
+			idx++;
+			String value = (idx<subData.size() ? subData.get(idx):"");
+			playDetalList = getDiscarded(subLine,value,player);
+		}else if( subLine.startsWith(LogConst.PREFIX_DISCARDED) ){
+			//入れ替え
+			logger.info("１枚カードを捨てた");
+			playDetalList = getDiscardedOneCard(subLine,player);
+		}else if( subLine.endsWith(LogConst.SUFFIX_SHUFFUL) ){
+			
+		}
+		
+		return playDetalList;
+	}
+
+	protected List<PlayDetail> getDiscardedOneCard(String subLine,String turnPlayer) {
+		Discard discard = new Discard();
+		List<PlayDetail> playDetalList = new ArrayList<>();
+		
+		String card = subLine.replace(LogConst.PREFIX_DISCARDED, "");
+
+		CardDto cardDto = PokeApiService.getCardDto(card);
+		discard.addDiscardList(cardDto);
+		logger.info(card + "を捨てた");
+		playDetalList.add(discard);
+		
+		return playDetalList;
+	}
+	protected List<PlayDetail> getDiscarded(String subdata,String discards,String turnPlayer) {
+		Discard discard = new Discard();
+		List<PlayDetail> playDetalList = new ArrayList<>();
+		
+		if( discards.startsWith(LogConst.PLAY_CARD_PREFIX)) {
+			//捨てたカード
+			String[] cards = discards.replace(LogConst.PLAY_CARD_PREFIX, "").split(",");
+			
+			for(String card : cards ) {
+				CardDto cardDto = PokeApiService.getCardDto(card);
+				discard.addDiscardList(cardDto);
+				logger.info(card + "を捨てた");
+			}
+		}
+		playDetalList.add(discard);
+		
+		return playDetalList;
+	}
+	
+	/**
+	 * 
+	 * @param gameInfo
+	 * @param turnPlayer
+	 * @param subLine
+	 * @param field
+	 * @return
+	 */
+	protected List<PlayDetail> playedSwitch(
+			GameInfo gameInfo,
+			String turnPlayer,
+			String subLine,
+			BattleAreaDto field){
+		List<PlayDetail> playDetalList = new ArrayList<>();
+		
+		subLine = subLine.replaceFirst(LogConst.PREFIX_SWITCH,"");
+		subLine = subLine.replace(LogConst.SUFFIX_SWITCH,"");
+		
+		int midIdx = subLine.indexOf(LogConst.MID_SWITCH);
+		subLine = subLine.replace(turnPlayer+LogConst.PREFIX_SWITCH, "");
+		
+		
+		String toActivePoke = subLine.substring(0,midIdx);
+		String toBenchPoke = subLine.substring(
+				midIdx+LogConst.MID_SWITCH.length(),
+				subLine.length());
+		
+		logger.info(toBenchPoke+"が下がって"+toActivePoke+"がバトル場へ");
+		
+		switchPoke(field,toActivePoke,toBenchPoke);		
+		
+		return playDetalList;
+	}
+	
+	protected Studium getStudium(String cardName) {
+		Studium studium = new Studium();
+		
+		studium.setImgUrl(PokeApiService.findSmallImage(cardName));
+		
+		return studium;
+	}
+
+	protected Bench getToBench(
+			String card,
+			BattleAreaDto field
+			) {
+		Bench benchObj = new Bench();
+		benchObj.setDrawCard(PokeApiService.getCardDto(card));
+		benchObj.setMsg(card + "をベンチを出した");
+		benchObj.setImgUrl(benchObj.getDrawCard().getImgPath());
+		field.adddBechField(benchObj.getDrawCard());
+		
+		logger.info(card + "をベンチを出した");
+		
+		return benchObj;
+	}
+	/**
+	 * 
+	 * @param gameInfo
+	 * @param turnPlayer
+	 * @param bench
+	 * @return
+	 */
+	protected List<PlayDetail> getToBechSub(
+			GameInfo gameInfo,
+			String turnPlayer,
+			String bench,
+			BattleAreaDto field){
+		List<PlayDetail> playDetalList = new ArrayList<>();
+		
+		String card = bench.replace(LogConst.PREFIX_DRAW, "").replace(LogConst.SUFFIX_TOBENCH, "");
+		Bench benchObj = getToBench(card,field);
+		playDetalList.add(benchObj);
+				
+		return playDetalList;
+	}
+	/**
+	 * 
+	 * @param gameInfo
+	 * @param turnPlayer
+	 * @param bench
+	 * @return
+	 */
+	protected List<PlayDetail> getToBechList(
+			GameInfo gameInfo,String turnPlayer,String bench,BattleAreaDto field){
+
+		List<PlayDetail> playDetalList = new ArrayList<>();
+		
+		String[] cards = bench.replace(LogConst.PLAY_CARD_PREFIX, "").split(",");
+		for(String card : cards) {
+			Bench benchObj = new Bench();
+			benchObj.setDrawCard(PokeApiService.getCardDto(card));
+			benchObj.setMsg(card + "をベンチを出した");
+			benchObj.setImgUrl(benchObj.getDrawCard().getImgPath());
+			playDetalList.add(benchObj);
+			logger.info(card + "をベンチを出した");
+		}
+
+		//フィールドを更新;
+		for(PlayDetail pd :  playDetalList) {
+			field.adddBechField(((Bench)pd).getDrawCard());
+		}
+		
+		return playDetalList;
+	}
+	protected List<PlayDetail> getTurnPlayerDrawCards(String drawCardsStr){
+		List<PlayDetail> playDetalList = new ArrayList<>();
+		
+		if(!drawCardsStr.startsWith(LogConst.PLAY_CARD_PREFIX)) {
+			playDetalList.add( new Draw() );
+			return playDetalList;
+		}
+		
+		String[] cards = drawCardsStr.replace(LogConst.PLAY_CARD_PREFIX, "").split(",");
+		for(String card : cards) {
+			Draw draw = new Draw();
+			draw.setDrawCard(PokeApiService.getCardDto(card));
+			draw.setMsg(card + "を引いた");
+			draw.setImgUrl(draw.getDrawCard().getImgPath());
+			playDetalList.add(draw);
+			logger.info(card + "を引いた");
+		}
+		
+		return playDetalList;
+	}
+
+	protected List<PlayDetail> getTurnPlayerDrawOneCard(String subLine){
+		List<PlayDetail> playDetalList = new ArrayList<>();
+		
+		String card = subLine.replace(LogConst.PREFIX_DRAW, "");
+		Draw draw = new Draw();
+		draw.setDrawCard(PokeApiService.getCardDto(card));
+		draw.setMsg(card + "を引いた");
+		draw.setImgUrl(draw.getDrawCard().getImgPath());
+		playDetalList.add(draw);
+
+		logger.info(card + "を引いた");
+		
+		return playDetalList;
+	}
+}

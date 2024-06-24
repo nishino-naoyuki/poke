@@ -1,8 +1,0 @@
-package com.example.logviewe.service.play;
-
-public class PlayAnalayzerFactory {
-
-	public static PlayAnalazer getInst() {
-		
-	}
-}

@@ -1,0 +1,41 @@
+package com.example.logviewe.service.play;
+
+import java.util.List;
+
+import com.example.logviewe.param.GameInfo;
+import com.example.logviewe.param.Play;
+import com.example.logviewe.param.PlayId;
+import com.example.logviewe.param.play.UseAbility;
+
+public class UseAnalayzer extends PlayAnalazerBase implements PlayAnalayzer {
+
+	@Override
+	public Play getPlay(GameInfo gameInfo, String turnPlayer, String line) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Play getPlay(GameInfo gameInfo, String turnPlayer, String line, List<String> subData) {
+		Play play = new Play();
+		copyNowStuation(play,PlayId.USE,gameInfo);
+		
+		UseAbility useAbility = new UseAbility();
+		int idx = 0;
+		//特性の中身 サブデータの処理を行う
+		while(idx < subData.size()) {
+			String subLine = subData.get(idx);
+			//誰に対する効果かを取得する
+			String turgetPlayer = getSubLinePlayer(gameInfo,subLine);
+			if( turgetPlayer != null ) {
+				
+			}
+			idx++;
+		}
+		
+		
+		play.setPlayDetail(useAbility);
+		return play;
+	}
+
+}
