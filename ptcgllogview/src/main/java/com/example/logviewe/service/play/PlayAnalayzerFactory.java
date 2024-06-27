@@ -13,6 +13,8 @@ public class PlayAnalayzerFactory {
 			return new AttachAnalayzer();
 		}else if( playId.equals(PlayId.USE) ) {
 			return new UseAnalayzer();
+		}else if( playId.equals(PlayId.EVOLE) ) {
+			return new EvolvedAnalayzer();
 		}
 		
 		return null;

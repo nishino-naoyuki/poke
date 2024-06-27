@@ -8,6 +8,8 @@ public class LogConst {
 	public static  final String DSECOND = " decided to go second.";
 	public static  final String TOACTIVESP = " to the Active Spot.";
 	public static  final String TOBENCH = " to the Bench.";
+	public static  final String ONBENCH = " on the Bench.";
+	public static  final String INACTIVESP = " in the Active Spot.";
 	public static  final String TOSTUDIUM = " to the Stadium spot.";
 	public static  final String PLAYED = " played ";
 	public static  final String TURN1 = "Turn # 1";
@@ -29,6 +31,7 @@ public class LogConst {
 	public static  final String PREFIX_DISCARDED = " discarded ";
 	public static  final String PREFIX_PLAYED = " played ";
 	public static  final String PREFIX_ATTACHED = " attached ";
+	public static  final String PREFIX_EVOLVED = " evolved ";
 	
 	public static final String SUFFIX_INACTIVE = " in the Active Spot.";
 	public static final String SUFFIX_ONBENCH = " on the Bench.";

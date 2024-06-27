@@ -47,12 +47,13 @@
     <fullyQualifiedTypeName name="com.example.logviewe.param.FieldDto"/>
     <fullyQualifiedTypeName name="com.example.logviewe.param.BattleAreaDto"/>
     <fullyQualifiedTypeName name="com.example.logviewe.param.play.Discard"/>
-    <fullyQualifiedTypeName name="com.example.logviewe.param.CardDto"/>
-    <fullyQualifiedTypeName name="lombok.Data"/>
     <fullyQualifiedTypeName name="java.util.List"/>
     <fullyQualifiedTypeName name="java.util.ArrayList"/>
     <fullyQualifiedTypeName name="com.example.logviewe.param.play.UseAbility"/>
     <fullyQualifiedTypeName name="com.example.logviewe.param.LogConst"/>
     <fullyQualifiedTypeName name="com.example.logviewe.Exception.PokemonNotFound"/>
     <fullyQualifiedTypeName name="com.example.logviewe.param.play.Studium"/>
+    <fullyQualifiedTypeName name="lombok.Data"/>
+    <fullyQualifiedTypeName name="com.example.logviewe.param.play.Evolved"/>
+    <fullyQualifiedTypeName name="com.example.logviewe.param.CardDto"/>
 </qualifiedTypeNameHistroy>

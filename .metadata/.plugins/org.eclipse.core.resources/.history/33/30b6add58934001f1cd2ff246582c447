@@ -1,0 +1,6 @@
+package com.example.logviewe.param.play;
+
+@Data
+public class Evolved extends PlayDetail {
+
+}

@@ -24,7 +24,6 @@ public class UseAnalayzer extends PlayAnalazerBase implements PlayAnalayzer {
 		copyNowStuation(play,PlayId.USE,gameInfo);
 		
 		UseAbility useAbility = new UseAbility();
-		copyNowStuation(play,PlayId.USE,gameInfo);
 		String msg = "";
 		String imgUrl = "";
 		String pokemon = getPokemon(line,gameInfo);

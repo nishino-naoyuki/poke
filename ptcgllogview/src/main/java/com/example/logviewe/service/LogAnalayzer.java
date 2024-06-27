@@ -231,6 +231,11 @@ public class LogAnalayzer {
 				logger.info("draw:"+line); 
 				play = PlayAnalayzerFactory.getInst(PlayId.DRAW).getPlay( wkGameInfo,turnPlayer,line );
 				trunObj.addPlay(play);
+			}else if(line.startsWith(turnPlayer+LogConst.PREFIX_EVOLVED)) {
+				//ドロー
+				logger.info("evolved:"+line); 
+				play = PlayAnalayzerFactory.getInst(PlayId.EVOLE).getPlay( wkGameInfo,turnPlayer,line );
+				trunObj.addPlay(play);
 			}else if(line.startsWith(turnPlayer+LogConst.PREFIX_PLAYED)) {
 				//プレイ
 				logger.info("played:"+line);

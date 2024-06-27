@@ -15,6 +15,7 @@ import com.example.logviewe.param.PlayId;
 import com.example.logviewe.param.play.Bench;
 import com.example.logviewe.param.play.Discard;
 import com.example.logviewe.param.play.Draw;
+import com.example.logviewe.param.play.Evolved;
 import com.example.logviewe.param.play.PlayDetail;
 import com.example.logviewe.param.play.Studium;
 import com.example.logviewe.service.PokeApiService;
@@ -364,5 +365,39 @@ public abstract class PlayAnalazerBase {
 		logger.info(card + "を引いた");
 		
 		return playDetalList;
+	}
+	
+	protected Evolved getEvolved(BattleAreaDto field, String turnPlayer, String line) {
+		Evolved evolved = new Evolved();
+		
+		String wkLine = line.replace(turnPlayer+LogConst.PREFIX_EVOLVED, "");
+		String prePoke = wkLine.substring(0,wkLine.indexOf(LogConst.TO));
+		evolved.setPrePoke( PokeApiService.getCardDto(prePoke) );
+		
+		wkLine = wkLine.replace(prePoke+LogConst.TO,"");
+		String evoPoke = "";
+		CardDto cardDto;
+		if( wkLine.endsWith(LogConst.ONBENCH) ) {
+			//ベンチで進化
+			evoPoke = wkLine.substring(0, wkLine.indexOf(LogConst.ONBENCH));
+			cardDto = PokeApiService.getCardDto(evoPoke);
+			List<CardDto> benchfield = field.getBenchfield();
+			for(CardDto card : benchfield) {
+				if( card.getName().equals(evoPoke) ) {
+					card.setImgPath(cardDto.getImgPath());
+					card.setName(cardDto.getName());
+					break;
+				}
+			}
+		}else {
+			evoPoke = wkLine.substring(0, wkLine.indexOf(LogConst.INACTIVESP));
+			cardDto = PokeApiService.getCardDto(evoPoke);
+			field.setBattlefield(cardDto);
+		}
+		evolved.setEvoPoke( cardDto );
+		evolved.setMsg(prePoke+"が"+evoPoke+"に進化した");
+		evolved.setImgUrl(cardDto.getImgPath());
+		
+		return evolved;
 	}
 }
