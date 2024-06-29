@@ -19,6 +19,8 @@ public class LogConst {
 	public static  final String PLAY_CARD_PREFIX = "   • ";
 	public static  final String CONMA = ".";
 	public static  final String TO = " to ";
+	public static  final String CONCEDED = " conceded.";
+	public static  final String OPPONENT = "Opponent";
 	
 	public static final int FIRST = 0;
 	public static final int SECOND = 1;

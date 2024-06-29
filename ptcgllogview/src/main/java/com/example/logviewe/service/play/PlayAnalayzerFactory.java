@@ -15,6 +15,8 @@ public class PlayAnalayzerFactory {
 			return new UseAnalayzer();
 		}else if( playId.equals(PlayId.EVOLE) ) {
 			return new EvolvedAnalayzer();
+		}else if( playId.equals(PlayId.CONCEDE) ) {
+			return new ConcedeAnalayzer();
 		}
 		
 		return null;

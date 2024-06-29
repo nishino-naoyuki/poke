@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<link th:href="@{/css/style.css?v=1.0.6}" rel="stylesheet">
+</head>
+
+<body>
+	<div class="maincontents">
+		<div class="playdetail">
+			<h3 th:text="${playerNameL}"></h3>
+			<th:block th:each="turn : ${turnListL}">
+				<h3 th:text="${turn.turnNo}"></h3>
+				<th:block th:each="play : ${turn.plays}">
+					<div th:text="${play.playDetail.msg}">
+					</div>	
+					<img th:src="${play.playDetail.imgUrl}" class="sideimg">
+				</th:block>
+			</th:block>
+		</div>
+		<div class="fieldarea">
+			<p>対戦準備</p>
+			<div class="benchblock">
+				<th:block th:each="card : ${fieldDto.oppArea.benchfield}">
+					<div class="cardblock">
+						<img class="benchcardimg" th:src="${card.imgPath}">
+					</div>	
+				</th:block>
+			</div>	
+			<div class="battleblock">
+				<div class="cardblock">
+					<img class="battleimg" th:src="${fieldDto.oppArea.battlefield.imgPath}">
+				</div>	
+			</div>	
+			<div class="battleblock">
+				<div class="cardblock">
+					<img class="battleimg" th:src="${fieldDto.myArea.battlefield.imgPath}">
+				</div>	
+			</div>	
+			<div class="benchblock">
+				<th:block th:each="card : ${fieldDto.myArea.benchfield}">
+					<div class="cardblock">
+						<img class="benchcardimg" th:src="${card.imgPath}">
+					</div>	
+				</th:block>
+			</div>	
+		</div>
+		<div class="playdetail">
+			<h3 th:text="${playerNameR}"></h3>
+			<th:block th:each="turn : ${turnListR}">
+				<h3 th:text="${turn.turnNo}"></h3>
+				<th:block th:each="play : ${turn.plays}">
+					<div th:text="${play.playDetail.msg}">
+					</div>	
+					<img class="sideimg" th:src="${play.playDetail.imgUrl}">
+				</th:block>
+			</th:block>
+		</div>
+	</div>
+</body>
+</html>

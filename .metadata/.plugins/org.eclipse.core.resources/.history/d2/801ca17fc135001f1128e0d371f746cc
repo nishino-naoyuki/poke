@@ -1,0 +1,6 @@
+package com.example.logviewe.param.play;
+
+public class Conceded extends PlayDetail {
+	private String concededPlayer;
+	private String winPlayer;
+}

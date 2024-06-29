@@ -98,16 +98,15 @@ public class BattleController {
     	session.setAttribute("turnList", turnList);
     	session.setAttribute("turnNum", 1);
     	
-    	Turn turnL = turnList.getTurnList().get(0);
-    	Turn turnR = turnList.getTurnList().get(1);
-    	String turnMsgL = (turnL.isFirst()?"先行":"後攻") + turnL.getTurnNo()+ "TURN";
-    	String turnMsgR = (turnR.isFirst()?"先行":"後攻") + turnR.getTurnNo()+ "TURN";
+    	List<Turn> turnListL = turnList.getFirstList();
+    	List<Turn> turnListR = turnList.getSecondList();
+    	String playerNameL = (gameInfo.getPlayers().isFirst()?gameInfo.getPlayers().getMyName():gameInfo.getPlayers().getOppName());
+    	String playerNameR = (gameInfo.getPlayers().isFirst()?gameInfo.getPlayers().getOppName():gameInfo.getPlayers().getMyName());
 		mv.addObject("fieldDto",gameInfo.getField());
-		mv.addObject("hand",gameInfo.getHand());
-		mv.addObject("turnR",turnR);
-		mv.addObject("turnL",turnL);
-		mv.addObject("turnMsgL",turnMsgL);
-		mv.addObject("turnMsgR",turnMsgR);
+		mv.addObject("playerNameL",playerNameL);
+		mv.addObject("playerNameR",playerNameR);
+		mv.addObject("turnListL",turnListL);
+		mv.addObject("turnListR",turnListR);
     	mv.setViewName("field");
     	
     	return mv;

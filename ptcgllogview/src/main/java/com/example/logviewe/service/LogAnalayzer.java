@@ -253,9 +253,19 @@ public class LogAnalayzer {
 				List<String> subData = getSubData();
 				play = PlayAnalayzerFactory.getInst(PlayId.USE).getPlay(wkGameInfo,turnPlayer,line,subData);
 				trunObj.addPlay(play);
+			}else if(line.contains(LogConst.CONCEDED)) {
+				//降参
+				logger.info("conceded:");
+				List<String> subData = getSubData();
+				play = PlayAnalayzerFactory.getInst(PlayId.CONCEDE).getPlay(wkGameInfo,turnPlayer,line,subData);
+				trunObj.addPlay(play);
 			}else {
 			}
 			
+		}
+		
+		if(trunObj != null) {
+			turnList.addTurn(trunObj);
 		}
 		return turnList;
 	}

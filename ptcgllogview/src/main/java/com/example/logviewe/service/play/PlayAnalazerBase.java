@@ -23,6 +23,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 public abstract class PlayAnalazerBase {
 	Logger logger = LoggerFactory.getLogger(PlayAnalazerBase.class);
+	protected final String NOIMAGE = "/img/noimage.png";
 
 	public void copyNowStuation(Play play,PlayId playId,GameInfo gameInfo) {
 

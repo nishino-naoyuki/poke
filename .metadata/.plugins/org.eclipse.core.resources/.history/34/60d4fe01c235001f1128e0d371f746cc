@@ -1,0 +1,22 @@
+package com.example.logviewe.service.play;
+
+import java.util.List;
+
+import com.example.logviewe.param.GameInfo;
+import com.example.logviewe.param.Play;
+
+public class ConcedeAnalayzer extends PlayAnalazerBase implements PlayAnalayzer {
+
+	@Override
+	public Play getPlay(GameInfo gameInfo, String turnPlayer, String line) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Play getPlay(GameInfo gameInfo, String turnPlayer, String line, List<String> subData) {
+		// TODO Auto-generated method stub
+		return getPlay(gameInfo,turnPlayer,line);
+	}
+
+}

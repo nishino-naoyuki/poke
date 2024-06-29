@@ -13,6 +13,7 @@ public enum PlayId {
 	ACTIVE(8,"バトル場へ出す"),
 	USE(9,"特性を使う"),
 	STUDIUM(10,"スタジアムを出す"),
+	CONCEDE(11,"降参"),
 	ELSE(99,"その他");
 	
 
