@@ -44,4 +44,7 @@ public class LogConst {
 	public static final String SUFFIX_KNOCKEDOUT = " was Knocked Out!";
 	public static final String SUFFIX_DAMAGE = " damage.";
 	public static final String MID_USED = " used ";
+	
+	public static final String MID_GETSIDE = " took ";
+	public static final String SUFFFIX_GETSIDE = " Prize card";
 }

@@ -15,9 +15,11 @@ import com.example.logviewe.param.FieldDto;
 import com.example.logviewe.param.GameInfo;
 import com.example.logviewe.param.Hand;
 import com.example.logviewe.param.LogConst;
+import com.example.logviewe.param.LostField;
 import com.example.logviewe.param.Play;
 import com.example.logviewe.param.PlayId;
 import com.example.logviewe.param.PlayerDto;
+import com.example.logviewe.param.StudiumCard;
 import com.example.logviewe.param.Turn;
 import com.example.logviewe.param.TurnList;
 import com.example.logviewe.param.input.InputData;
@@ -31,14 +33,16 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 @Service
 public class LogAnalayzer {
 	Logger logger = LoggerFactory.getLogger(LogAnalayzer.class);
+	private final int PRIZE_INIT_NUM = 6;
 	
 	/**
 	 * プレイヤー名を取得する
 	 * @return
 	 * @throws NotInitializeException 
 	 */
-	public PlayerDto getPlayerNames() throws NotInitializeException{
-		PlayerDto playerdto = new PlayerDto();
+	public void getPlayerNames(GameInfo gameInfo) throws NotInitializeException{
+		PlayerDto myPlayer = new PlayerDto();
+		PlayerDto oppPlayer = new PlayerDto();
 		
 		int num = 0;
 		//プレイヤー名を抜き出す
@@ -50,10 +54,10 @@ public class LogAnalayzer {
 				//2行したにカードの種類があれば、自分
 				String mark = InputData.getInst().readOffset(1);
 				if( mark.startsWith(LogConst.CARDMAKR)) {
-					playerdto.setMyName( name );
+					myPlayer.setName( name );
 					num++;
 				}else {
-					playerdto.setOppName(name);
+					oppPlayer.setName(name);
 					num++;
 				}
 			}
@@ -65,15 +69,21 @@ public class LogAnalayzer {
 			if( line.endsWith(LogConst.DFIRST) ) {
 				//先行をとった人は・・・
 				String name = line.replace(LogConst.DFIRST,"");
-				playerdto.setFirst( (name.equals(playerdto.getMyName())) );
+				myPlayer.setFirst( (name.equals(myPlayer.getName())) );
+				oppPlayer.setFirst( (name.equals(oppPlayer.getName())) );
 			}else if(line.endsWith(LogConst.DSECOND)) {
 				//後攻を取った人は・・・
 				String name = line.replace(LogConst.DSECOND,"");
-				playerdto.setFirst( !(name.equals(playerdto.getMyName())) );
+				myPlayer.setFirst( !(name.equals(myPlayer.getName())) );
+				oppPlayer.setFirst( !(name.equals(oppPlayer.getName())) );
 			}
 		}
+		//サイドをセット
+		myPlayer.setPrizeNum(PRIZE_INIT_NUM);
+		oppPlayer.setPrizeNum(PRIZE_INIT_NUM);
 		
-		return playerdto;
+		gameInfo.setMyPlayer(myPlayer);
+		gameInfo.setOppPlayer(oppPlayer);
 	}
 	
 	/**
@@ -114,9 +124,13 @@ public class LogAnalayzer {
 	 * @return
 	 * @throws NotInitializeException 
 	 */
-	public GameInfo getInitilaize(GameInfo gameInfo) throws NotInitializeException {
-		String myName = gameInfo.getPlayers().getMyName();
-		String oppName = gameInfo.getPlayers().getOppName();
+	public GameInfo getInitilaize() throws NotInitializeException {
+		GameInfo gameInfo = new GameInfo();
+		
+		getPlayerNames(gameInfo);
+		
+		String myName = gameInfo.getMyPlayer().getName();
+		String oppName = gameInfo.getOppPlayer().getName();
 		FieldDto field = new FieldDto();
 		BattleAreaDto myArea = new BattleAreaDto();
 		BattleAreaDto oppArea = new BattleAreaDto();
@@ -157,11 +171,13 @@ public class LogAnalayzer {
 		
 		field.setMyArea(myArea);
 		field.setOppArea(oppArea);
+		field.setStudium(new StudiumCard());
+		field.setLostField(new LostField());
 		gameInfo.setField(field);
 		
 		//バトル場にだしカードを手札から消す
-		gameInfo.getHand().removeCard(myArea.getBattlefield());
-		removeCard(gameInfo.getHand(),myArea.getBenchfield());
+		//gameInfo.getHand().removeCard(myArea.getBattlefield());
+		//removeCard(gameInfo.getHand(),myArea.getBenchfield());
 		
 		return gameInfo;
 	}
@@ -184,13 +200,14 @@ public class LogAnalayzer {
 	
 	public TurnList getTurnList(GameInfo gameInfo) throws NotInitializeException {
 		TurnList turnList = new TurnList();
-		PlayerDto player = gameInfo.getPlayers();
+		PlayerDto myPlayer = gameInfo.getMyPlayer();
+		PlayerDto oppPlayer = gameInfo.getOppPlayer();
 		int turn = 1;
 		int pidx = LogConst.FIRST;
 		GameInfo wkGameInfo = gameInfo.clone();
 		String[] turnPlayers = {
-			(player.isFirst() ? player.getMyName():player.getOppName()),
-			(player.isFirst() ? player.getOppName():player.getMyName()),
+			(myPlayer.isFirst() ? myPlayer.getName():oppPlayer.getName()),
+			(myPlayer.isFirst() ? oppPlayer.getName():myPlayer.getName()),
 		};
 
 		Turn trunObj = null;
@@ -253,6 +270,9 @@ public class LogAnalayzer {
 				List<String> subData = getSubData();
 				play = PlayAnalayzerFactory.getInst(PlayId.USE).getPlay(wkGameInfo,turnPlayer,line,subData);
 				trunObj.addPlay(play);
+			}else if( isTookPrize(turnPlayer,line )) {
+				logger.info("took prize:"+line);
+				
 			}else if(line.contains(LogConst.CONCEDED)) {
 				//降参
 				logger.info("conceded:");
@@ -268,6 +288,13 @@ public class LogAnalayzer {
 			turnList.addTurn(trunObj);
 		}
 		return turnList;
+	}
+
+	
+	public boolean isTookPrize(String turnPlayer,String line) {
+		
+		return ( line.startsWith(turnPlayer + LogConst.MID_GETSIDE) &&
+					line.contains(LogConst.SUFFFIX_GETSIDE));
 	}
 	
 	private List<String> getSubData() throws NotInitializeException{

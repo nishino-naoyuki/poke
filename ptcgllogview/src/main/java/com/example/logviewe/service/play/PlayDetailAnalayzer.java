@@ -39,7 +39,7 @@ public class PlayDetailAnalayzer extends PlayAnalazerBase implements PlayAnalayz
 		String msg = "";
 		String imgUrl = "";
 		BattleAreaDto field = (
-				gameInfo.getPlayers().getMyName().equals(turnPlayer)?
+				gameInfo.getMyPlayer().getName().equals(turnPlayer)?
 						gameInfo.getField().getMyArea() : gameInfo.getField().getOppArea());
 		//ベンチに出す
 		if( line.endsWith(LogConst.TOBENCH)) {
@@ -53,7 +53,7 @@ public class PlayDetailAnalayzer extends PlayAnalazerBase implements PlayAnalayz
 			//スタジアムを出す
 			copyNowStuation(play,PlayId.STUDIUM,gameInfo);
 			String value = line.replace(turnPlayer+LogConst.PREFIX_PLAYED, "").replace(LogConst.TOSTUDIUM, "");		
-			Studium studium = getStudium(value,turnPlayer);
+			Studium studium = getStudium(gameInfo,value,turnPlayer);
 			play.setPlayDetail(studium);
 		}else {
 			//何かを使った

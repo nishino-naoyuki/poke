@@ -8,10 +8,12 @@ import org.slf4j.LoggerFactory;
 
 import com.example.logviewe.param.BattleAreaDto;
 import com.example.logviewe.param.CardDto;
+import com.example.logviewe.param.FieldDto;
 import com.example.logviewe.param.GameInfo;
 import com.example.logviewe.param.LogConst;
 import com.example.logviewe.param.Play;
 import com.example.logviewe.param.PlayId;
+import com.example.logviewe.param.StudiumCard;
 import com.example.logviewe.param.play.Bench;
 import com.example.logviewe.param.play.Discard;
 import com.example.logviewe.param.play.Draw;
@@ -29,7 +31,7 @@ public abstract class PlayAnalazerBase {
 
 		play.setPlayId(playId);
 		//現状をコピーする
-		play.setHand( gameInfo.getHand().clone() );
+		//play.setHand( gameInfo.getHand().clone() );
 		play.setMyArea( gameInfo.getField().getMyArea().clone() );
 		play.setOppArea( gameInfo.getField().getOppArea().clone() );
 	}
@@ -56,8 +58,8 @@ public abstract class PlayAnalazerBase {
 		}
 		subLine = subLine.replace(LogConst.PLAY_SUB_PREFIX, "");
 		
-		return (subLine.startsWith( gameInfo.getPlayers().getMyName()) ?
-				gameInfo.getPlayers().getMyName():gameInfo.getPlayers().getOppName());
+		return (subLine.startsWith( gameInfo.getMyPlayer().getName()) ?
+				gameInfo.getMyPlayer().getName():gameInfo.getOppPlayer().getName());
 	}
 	
 	protected boolean isAttachToBenchMsg(String line) {
@@ -93,8 +95,8 @@ public abstract class PlayAnalazerBase {
 		int idx = 0;
 		List<PlayDetail> playDetalList = new ArrayList<>();
 		String oppPlayer = (
-				gameInfo.getPlayers().getMyName().equals(turnPlayer)?
-						turnPlayer : gameInfo.getPlayers().getOppName());
+				gameInfo.getMyPlayer().getName().equals(turnPlayer)?
+						gameInfo.getOppPlayer().getName() : gameInfo.getMyPlayer().getName());
 		
 		while(idx < subData.size()) {
 			String subLine = subData.get(idx);
@@ -140,7 +142,7 @@ public abstract class PlayAnalazerBase {
 			){
 		BattleAreaDto field;
 		List<PlayDetail> playDetalList = new ArrayList<>();
-		if( gameInfo.getPlayers().getMyName().equals(player) ) {
+		if( gameInfo.getMyPlayer().getName().equals(player) ) {
 			field = gameInfo.getField().getMyArea();
 		}else {
 			field = gameInfo.getField().getOppArea();
@@ -254,8 +256,9 @@ public abstract class PlayAnalazerBase {
 		return playDetalList;
 	}
 	
-	protected Studium getStudium(String cardName,String playerName) {
+	protected Studium getStudium(GameInfo gameInfo,String cardName,String playerName) {
 		Studium studium = new Studium();
+		CardDto card = new CardDto();
 		
 		try {
 			studium.setPlayerName(playerName);
@@ -265,6 +268,14 @@ public abstract class PlayAnalazerBase {
 			studium.setImgUrl("");
 			e.printStackTrace();
 		}
+		
+		card.setName(cardName);
+		card.setImgPath(studium.getImgUrl());
+		
+		FieldDto field = gameInfo.getField();
+		StudiumCard studiumCard = new StudiumCard();
+		studiumCard.setStudium(card);
+		field.setStudium(studiumCard);
 		
 		return studium;
 	}

@@ -7,7 +7,7 @@
 <body>
 	<div class="maincontent">
 		<p>バトルログ読み込み</p>
-		<form th:action="@{/battle}" method="post" enctype="multipart/form-data">
+		<form th:action="@{/battle/start}" method="post" enctype="multipart/form-data">
 			<input class="form-control" type="file" name="battleFile" value="" id="inputuserfile">
 			<button id="battle">バトル開始</button>
 		</form>

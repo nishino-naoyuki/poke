@@ -49,19 +49,19 @@ public class BattleController {
     		@RequestParam MultipartFile battleFile
     		) throws JsonMappingException, JsonProcessingException, NotInitializeException   {
 		
-		List<String> fileContents = fileContents(battleFile);
-		InputData.initialize(fileContents);
-		PlayerDto pdto = logana.getPlayerNames();
-		Hand hand = logana.getFirstHand(pdto.getMyName());
+		//List<String> fileContents = fileContents(battleFile);
+		//InputData.initialize(fileContents);
+		//PlayerDto pdto = logana.getPlayerNames();
+		//Hand hand = logana.getFirstHand(pdto.getMyName());
 		
 		GameInfo gameInfo = new GameInfo();
-		gameInfo.setHand(hand);
-		gameInfo.setPlayers(pdto);
+		//gameInfo.setHand(hand);
+		//gameInfo.setPlayers(pdto);
 		
-		mv.addObject("hand",hand);
-    	mv.setViewName("start");
+		//mv.addObject("hand",hand);
+    	//mv.setViewName("start");
     	
-    	session.setAttribute("gameInfo", gameInfo);
+    	//session.setAttribute("gameInfo", gameInfo);
     	
     	return mv;
     }
@@ -71,42 +71,48 @@ public class BattleController {
     		ModelAndView mv
     		) throws NotInitializeException    {
 		//セッションから情報種特区
-		GameInfo gameInfo = (GameInfo)session.getAttribute("gameInfo");
+		//GameInfo gameInfo = (GameInfo)session.getAttribute("gameInfo");
 		
-		logana.getInitilaize(gameInfo);
+		//logana.getInitilaize(gameInfo);
 
-    	session.setAttribute("gameInfo", gameInfo);
+    	//session.setAttribute("gameInfo", gameInfo);
     	
-		mv.addObject("fieldDto",gameInfo.getField());
-		mv.addObject("hand",gameInfo.getHand());
-    	mv.setViewName("init");
+		//mv.addObject("fieldDto",gameInfo.getField());
+		//mv.addObject("hand",gameInfo.getHand());
+    	//mv.setViewName("init");
     	
     	return mv;
 	}
 
-	@RequestMapping(value= {"/field"}, method=RequestMethod.POST)
-    public ModelAndView field(
-    		ModelAndView mv
+	@RequestMapping(value= {"/start"}, method=RequestMethod.POST)
+    public ModelAndView start(
+    		ModelAndView mv,
+    		@RequestParam MultipartFile battleFile
     		) throws NotInitializeException    {
-		//セッションから情報種特区
-		GameInfo gameInfo = (GameInfo)session.getAttribute("gameInfo");
+
+		List<String> fileContents = fileContents(battleFile);
+		InputData.initialize(fileContents);
+
 		
-		logana.getInitilaize(gameInfo);
+		GameInfo gameInfo = logana.getInitilaize();
 		TurnList turnList = logana.getTurnList(gameInfo);
 
     	session.setAttribute("gameInfo", gameInfo);
     	session.setAttribute("turnList", turnList);
-    	session.setAttribute("turnNum", 1);
     	
     	List<Turn> turnListL = turnList.getFirstList();
     	List<Turn> turnListR = turnList.getSecondList();
-    	String playerNameL = (gameInfo.getPlayers().isFirst()?gameInfo.getPlayers().getMyName():gameInfo.getPlayers().getOppName());
-    	String playerNameR = (gameInfo.getPlayers().isFirst()?gameInfo.getPlayers().getOppName():gameInfo.getPlayers().getMyName());
+    	String playerNameL = (gameInfo.getMyPlayer().isFirst()?gameInfo.getMyPlayer().getName():gameInfo.getOppPlayer().getName());
+    	String playerNameR = (gameInfo.getMyPlayer().isFirst()?gameInfo.getOppPlayer().getName():gameInfo.getMyPlayer().getName());
+    	int prizeNumL = (gameInfo.getMyPlayer().isFirst()?gameInfo.getMyPlayer().getPrizeNum():gameInfo.getOppPlayer().getPrizeNum());
+    	int prizeNumR = (gameInfo.getMyPlayer().isFirst()?gameInfo.getOppPlayer().getPrizeNum():gameInfo.getMyPlayer().getPrizeNum());
 		mv.addObject("fieldDto",gameInfo.getField());
 		mv.addObject("playerNameL",playerNameL);
 		mv.addObject("playerNameR",playerNameR);
 		mv.addObject("turnListL",turnListL);
 		mv.addObject("turnListR",turnListR);
+		mv.addObject("prizeNumL",prizeNumL);
+		mv.addObject("prizeNumR",prizeNumR);
     	mv.setViewName("field");
     	
     	return mv;

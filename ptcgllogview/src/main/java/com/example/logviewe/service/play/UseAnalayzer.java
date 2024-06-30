@@ -60,8 +60,8 @@ public class UseAnalayzer extends PlayAnalazerBase implements PlayAnalayzer {
 	 */
 	private String getPokemon(String line,GameInfo gameInfo) {
 		
-		String myPlayer = gameInfo.getPlayers().getMyName();
-		String oppPlayer = gameInfo.getPlayers().getOppName();
+		String myPlayer = gameInfo.getMyPlayer().getName();
+		String oppPlayer = gameInfo.getOppPlayer().getName();
 		
 		String abPlayer = (line.startsWith(myPlayer)? myPlayer:oppPlayer);
 		
@@ -73,8 +73,8 @@ public class UseAnalayzer extends PlayAnalazerBase implements PlayAnalayzer {
 
 	private String getAbilityName(String line,GameInfo gameInfo) {
 
-		String myPlayer = gameInfo.getPlayers().getMyName();
-		String oppPlayer = gameInfo.getPlayers().getOppName();
+		String myPlayer = gameInfo.getMyPlayer().getName();
+		String oppPlayer = gameInfo.getOppPlayer().getName();
 		
 		String abPlayer = (line.startsWith(myPlayer)? myPlayer:oppPlayer);
 		

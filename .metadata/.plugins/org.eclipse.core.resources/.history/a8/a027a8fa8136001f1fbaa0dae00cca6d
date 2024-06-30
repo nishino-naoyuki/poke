@@ -1,0 +1,16 @@
+package com.example.logviewe.param;
+
+import java.util.List;
+
+import lombok.Data;
+
+@Data
+public class LostField {
+	List<CardDto> lostCardList;
+	
+	public void addLostCard(CardDto card) {
+		if( lostCardList == null ) {
+			lostCardList = new ArrayList<>();
+		}
+	}
+}

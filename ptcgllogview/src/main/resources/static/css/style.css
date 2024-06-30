@@ -46,6 +46,20 @@
 	width:10%;
 }
 
+.prizearea{
+	width: 100%;
+	display: flex;
+}
+.prizeimg{
+	width: 15%;
+}
+
+
+
+
+
+
+
 .include-accordion{
   background-color: #35924A;
   padding: 0;

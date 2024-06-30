@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class PlayerDto {
-	private String MyName;
-	private String oppName;
+	private String name;
 	private boolean isFirst;
+	private int prizeNum;
 }

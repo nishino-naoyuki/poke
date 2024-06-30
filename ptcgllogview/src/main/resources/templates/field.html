@@ -2,13 +2,18 @@
 <html lang="en">
 
 <head>
-	<link th:href="@{/css/style.css?v=1.0.7}" rel="stylesheet">
+	<link th:href="@{/css/style.css?v=1.0.8}" rel="stylesheet">
 </head>
 
 <body>
 	<div class="maincontents">
 		<div class="playdetail">
 			<h3 th:text="|${playerNameL}:先行|"></h3>
+			<div class="prizearea">
+				<th:block th:each="i : ${#numbers.sequence(1,6)}">
+					<img class="prizeimg" src="/img/prizeimg.png">
+				</th:block>
+			</div>
 			<ul class="include-accordion scroll-control">
 				<th:block th:each="turn : ${turnListL}">
 					<li>
@@ -54,6 +59,11 @@
 		</div>
 		<div class="playdetail">
 			<h3 th:text="|${playerNameR}:後攻|"></h3>
+			<div class="prizearea">
+				<th:block th:each="i : ${#numbers.sequence(1,6)}">
+					<img class="prizeimg" src="/img/prizeimg.png">
+				</th:block>
+			</div>
 			<ul class="include-accordion scroll-control">
 				<th:block th:each="turn : ${turnListR}">
 					<li>

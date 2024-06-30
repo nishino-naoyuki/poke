@@ -1,0 +1,119 @@
+.cardblock{
+	height: 100%;
+	text-align: center;
+}
+.cardimg{
+	height: 90%;
+}
+.battleimg{
+	height: 100%;
+	margin: 0 auto 0 auto;
+}
+.handlist{
+	height: 15%;
+	width: 90%;
+	display: flex;
+}
+.benchblock{
+	display: flex;
+	height: 15%;
+}
+.benchcardimg{
+	height: 90%;
+}
+.battleblock{
+	width: 20%;
+	height: 15%;
+	margin:0 auto 0 auto;
+}
+.maincontents{
+	width: 100%;
+	margin:0 auto 0 auto;
+	display: flex;
+}
+.fieldarea{
+	width: 60%;
+	height: 95vh;
+	padding: 1vw;
+}
+.playdetail{
+	padding: 1vw;
+	box-sizing: border-box;
+	width: 20%;
+	background-color: aqua;
+}
+.sideimg{
+	width:10%;
+}
+
+.include-accordion{
+  background-color: #35924A;
+  padding: 0;
+  color: #fff;
+}
+li{
+  list-style: none;
+}
+.include-accordion ul{
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+  transition: .5s;
+  border-top: 1px solid #67a863;
+  background-color: #5EAA6C;
+  margin:0;
+}
+.include-accordion li li{
+  border-bottom: 1px dotted #7FBF8B;
+  padding: 10px 0 10px 10px;
+  margin-left:15px;
+}
+ul:nth-of-type(1) li.active li:last-child{
+  border-bottom:1px solid #67a863; 
+}
+button{
+  position: relative;
+  border: none;
+  width: 100%;
+  background-color: inherit;
+  color: #fff;
+  cursor: pointer;
+  text-align: left;
+  padding: 15px 0 15px 20px;
+  font-size:1em;
+}
+button:hover{
+  background-color: #1A5B27;
+}
+button::before,
+button::after{
+  content:"";
+  position: absolute;
+  top: 50%;
+  width: 1.5px;
+  height: 8px;
+  background-color: #fff;
+  transition: .5s;
+}
+button::before{
+  transform: translateY(-50%) rotate(-45deg);
+  right: 35px;
+}
+button::after{
+  transform: translateY(-50%) rotate(45deg);
+  right: 30px;
+}
+li.active button::before{
+  transform: translateY(-50%) rotate(-135deg);
+  transition:.5s;
+}
+li.active button::after{
+  transform: translateY(-50%) rotate(135deg);
+  transition:.5s;
+}
+ul:nth-of-type(2){ background-color: #357D87; }
+ul:nth-of-type(2) ul{ background-color: #519FA5; border-top: 1px solid #5D9FA8; }
+ul:nth-of-type(2) button:hover{ background-color: #1C4B56; }
+ul:nth-of-type(2) li li{ border-bottom: 1px dotted #73BEBF; }
+ul:nth-of-type(2) li.active li:last-child{ border-bottom:1px solid #5D9FA8; }
+ul.active{ overflow-y: auto; }

@@ -21,11 +21,11 @@ public class ConcedeAnalayzer extends PlayAnalazerBase implements PlayAnalayzer 
 		
 		String concededPlayer = line.substring(0, line.indexOf(LogConst.CONCEDED));
 		if( concededPlayer.equals(LogConst.OPPONENT)) {
-			conceded.setConcededPlayer(gameInfo.getPlayers().getOppName());
-			conceded.setWinPlayer(gameInfo.getPlayers().getMyName());
+			conceded.setConcededPlayer(gameInfo.getOppPlayer().getName());
+			conceded.setWinPlayer(gameInfo.getMyPlayer().getName());
 		}else {
-			conceded.setConcededPlayer(gameInfo.getPlayers().getMyName());
-			conceded.setWinPlayer(gameInfo.getPlayers().getOppName());
+			conceded.setConcededPlayer(gameInfo.getMyPlayer().getName());
+			conceded.setWinPlayer(gameInfo.getOppPlayer().getName());
 		}
 		
 		String msg = conceded.getConcededPlayer() + "が降参しました。";

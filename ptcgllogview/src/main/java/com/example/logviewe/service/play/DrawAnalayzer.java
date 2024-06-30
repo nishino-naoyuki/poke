@@ -25,7 +25,7 @@ public class DrawAnalayzer extends PlayAnalazerBase implements PlayAnalayzer {
 		String msg = "";
 		String imgUrl = "";
 		//何を引いたかを確認
-		if( turnPlayer.equals(gameInfo.getPlayers().getMyName())) {
+		if( turnPlayer.equals(gameInfo.getMyPlayer().getName())) {
 			//自分の場合
 			String value = line.replace(turnPlayer+LogConst.PREFIX_DRAW, "").replace(".", "");
 			playDetail.setDrawCard( PokeApiService.getCardDto(value) );

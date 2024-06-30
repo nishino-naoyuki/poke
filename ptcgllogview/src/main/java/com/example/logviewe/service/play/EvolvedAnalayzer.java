@@ -23,7 +23,7 @@ public class EvolvedAnalayzer extends PlayAnalazerBase implements PlayAnalayzer 
 		copyNowStuation(play,PlayId.EVOLE,gameInfo);
 
 		BattleAreaDto field;
-		if( gameInfo.getPlayers().getMyName().equals(turnPlayer) ) {
+		if( gameInfo.getMyPlayer().getName().equals(turnPlayer) ) {
 			field = gameInfo.getField().getMyArea();
 		}else {
 			field = gameInfo.getField().getOppArea();
